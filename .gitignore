@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 testsprite_tests/tmp/prd_files/*.pdf
+testsprite_tests/tmp/

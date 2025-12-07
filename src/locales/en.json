@@ -1,0 +1,80 @@
+{
+    "app": {
+        "name": "Raksha Netra",
+        "tagline": "AI-Powered Cyber Incident Portal for Defence"
+    },
+    "login": {
+        "title": "Authorized Access Only",
+        "subtitle": "Enter your credentials to access the secure portal",
+        "email": "Email Address",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "login": "SECURE LOGIN",
+        "dontHaveAccount": "Don't have an account?",
+        "register": "Register here",
+        "demoCredentials": "Demo Credentials",
+        "emailPlaceholder": "officer@army.mil",
+        "passwordPlaceholder": "••••••••"
+    },
+    "hero": {
+        "title": "Next-Generation Cyber Incident Reporting & Intelligence Platform",
+        "secureAccess": "Secure Access",
+        "secureAccessDesc": "End-to-end encrypted communication for sensitive data protection.",
+        "realTimeIntel": "Real-time Intel",
+        "realTimeIntelDesc": "Instant threat analysis and automated risk scoring."
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "overview": "Overview",
+        "recentIncidents": "Recent Incidents",
+        "statistics": "Statistics",
+        "totalIncidents": "Total Incidents",
+        "criticalAlerts": "Critical Alerts",
+        "underReview": "Under Review",
+        "resolved": "Resolved",
+        "last24Hours": "Last 24 Hours",
+        "last7Days": "Last 7 Days",
+        "viewAll": "View All"
+    },
+    "report": {
+        "title": "Report Incident",
+        "incidentType": "Incident Type",
+        "url": "URL",
+        "message": "Message",
+        "file": "File",
+        "description": "Description",
+        "submit": "Submit Report",
+        "location": "Location",
+        "category": "Category",
+        "phishing": "Phishing",
+        "malware": "Malware",
+        "scam": "Scam",
+        "other": "Other"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "close": "Close",
+        "search": "Search",
+        "filter": "Filter",
+        "export": "Export",
+        "import": "Import"
+    },
+    "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+    },
+    "roles": {
+        "reporter": "Reporter",
+        "analyst": "Analyst",
+        "admin": "Admin"
+    }
+}

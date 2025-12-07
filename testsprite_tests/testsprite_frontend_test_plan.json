@@ -1,0 +1,676 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Registration Success",
+    "description": "Validate successful user registration with valid inputs for all required fields.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the registration page."
+      },
+      {
+        "type": "action",
+        "description": "Input valid username, email, password, and select role."
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is successfully registered and receives confirmation."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Registration Input Validation",
+    "description": "Ensure the registration form validates inputs and handles invalid data correctly.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the registration page."
+      },
+      {
+        "type": "action",
+        "description": "Input invalid email format and weak password."
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate error messages are displayed preventing registration."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "User Login Success with Correct Credentials",
+    "description": "Check that login succeeds with valid username/email and password, issuing JWT.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page."
+      },
+      {
+        "type": "action",
+        "description": "Input valid username/email and password."
+      },
+      {
+        "type": "action",
+        "description": "Click the login button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify successful authentication and JWT token issuance."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "User Login Failure with Incorrect Credentials",
+    "description": "Verify the system blocks login attempts with invalid credentials and shows error.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page."
+      },
+      {
+        "type": "action",
+        "description": "Input incorrect username/email and password."
+      },
+      {
+        "type": "action",
+        "description": "Click the login button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login fails with appropriate error message."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "JWT Authentication and Role Enforcement",
+    "description": "Validate authenticated routes enforce JWT tokens and role-based access control for Reporter, Analyst, and Admin.",
+    "category": "security",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as different user roles."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access restricted backend APIs and UI pages for each role."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is granted or denied appropriately based on user role and JWT."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Incident Submission Via URL with AI Threat Analysis and DNS Verification",
+    "description": "Test multi-channel reporting by submitting a URL incident, triggering AI analysis, DNS lookup, and reachability check.",
+    "category": "functional",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Reporter."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to incident submission page."
+      },
+      {
+        "type": "action",
+        "description": "Select URL incident type and input valid suspicious URL."
+      },
+      {
+        "type": "action",
+        "description": "Submit the incident."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI threat analysis is performed with risk score (0-100) and severity classification displayed."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify DNS verification and HTTP reachability checks are completed and reflected in the incident details."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify incident is saved to database with all relevant metadata."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Incident Submission Via SMS with AI Analysis and Pattern Detection Fallback",
+    "description": "Test submission of an SMS-type incident and validate AI analysis along with rule-based fallback detection.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Reporter."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to incident submission page."
+      },
+      {
+        "type": "action",
+        "description": "Select SMS incident type and input suspicious message content."
+      },
+      {
+        "type": "action",
+        "description": "Submit the incident."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI-powered risk scoring and severity assignment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify fallback rule-based pattern detection identifies phishing or urgency triggers if AI inconclusive."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Incident Submission Via File Upload with Validation and AI Analysis",
+    "description": "Test file upload incident reporting flow, including file validation, secure handling, and threat analysis.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Reporter."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to incident submission page."
+      },
+      {
+        "type": "action",
+        "description": "Upload a supported file type containing suspicious content."
+      },
+      {
+        "type": "action",
+        "description": "Submit the incident."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify file is accepted and scanned securely without vulnerabilities."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI threat analysis is performed on file content and results displayed."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Incident Submission Edge Case: Invalid URL with Failed DNS Lookup",
+    "description": "Validate incident submission for a URL with invalid domain or unreachable host and proper error reporting.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Reporter."
+      },
+      {
+        "type": "action",
+        "description": "Submit a URL incident with a non-existent domain."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify DNS verification fails and appropriate warnings are shown in incident analysis."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the incident can still be submitted with flagged status."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Incident Duplicate and Repeat Threat Detection",
+    "description": "Validate the pattern matching engine accurately clusters duplicates and updates frequency counts for repeated threats.",
+    "category": "integration",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit multiple incidents with similar content and domains."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system detects duplicate patterns and updates frequency_count accordingly."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Incident Dashboard Filtering and Search",
+    "description": "Ensure analyst dashboard supports filtering by type, severity, status and search by keywords effectively.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Analyst."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the incident dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Apply filters for severity='high' and status='pending'."
+      },
+      {
+        "type": "action",
+        "description": "Perform a search using keywords from incident content."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify displayed results correctly match filters and search criteria."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Auto-Escalation Rule Triggering and Notification",
+    "description": "Test that incidents meeting predefined auto-escalation criteria are marked escalated with alerts sent to CERT.",
+    "category": "functional",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit an incident that meets an escalation rule (e.g. critical severity with financial keywords)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify incident status changes to escalated automatically."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify escalation reason and timestamp are recorded."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify notification to CERT or designated authority is dispatched."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Detailed Incident View with AI Expert Analysis and Lifecycle Timeline",
+    "description": "Verify that incident details page displays AI-generated analysis, lifecycle events, and related threat searches correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Analyst."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to a specific incident details page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI expert analysis text is displayed with risk score and severity."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify incident lifecycle timeline shows events in correct order."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify similar threats related to the incident are listed."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Fake Army Profile Detection with Confidence Scoring",
+    "description": "Test the detection system flags fake profiles associated with incidents and returns confidence level and indicators.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit or review incident with suspicious Army profile."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system provides fake profile detection status."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify confidence score (0-100) and detection indicators are displayed."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Live Threat Heatmap and Geo-Intelligence Data Display",
+    "description": "Ensure the live threat heatmap shows regional incidents mapped accurately to the seven Defence Commands with hotspot visualization.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Analyst or Admin."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the live threat heatmap page/component."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify geo-location data points map correctly and heatmap updates in real-time."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify regional defence command boundaries and hotspot intensity reflect incident frequency."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Bilingual UI Language Toggle Functionality",
+    "description": "Test the UI language toggle between English and Hindi updates all relevant UI text dynamically.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to any UI page."
+      },
+      {
+        "type": "action",
+        "description": "Toggle language to Hindi."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI text switches correctly to Hindi."
+      },
+      {
+        "type": "action",
+        "description": "Toggle back to English."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI text switches back to English."
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Theme Toggle Dark/Light Mode",
+    "description": "Validate that theme toggling switches UI between dark and light themes with correct styling and state persistence.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to any page."
+      },
+      {
+        "type": "action",
+        "description": "Toggle the theme switch to dark mode."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI colors and components reflect dark theme styling."
+      },
+      {
+        "type": "action",
+        "description": "Toggle back to light mode."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI colors and components reflect light theme styling."
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "File Upload Validation and Error Handling",
+    "description": "Check that uploading unsupported or invalid files prompts proper error messages without system crashes.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open incident submission page with file upload."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to upload unsupported file type or corrupted file."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system rejects file and displays meaningful error."
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "QR Code Scanner Component Functionality",
+    "description": "Validate that QR code scanner detects and inputs valid URLs or incident content correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open incident submission page with QR code scanner."
+      },
+      {
+        "type": "action",
+        "description": "Scan a QR code with valid URL or incident data."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify scanned data populates incident submission fields correctly."
+      },
+      {
+        "type": "action",
+        "description": "Scan invalid or corrupted QR code."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate error handling occurs."
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Voice Recorder Component Usage and Submission",
+    "description": "Test recording functionality, playback, and submission of voice data in incident reporting.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open incident submission page."
+      },
+      {
+        "type": "action",
+        "description": "Start recording voice input."
+      },
+      {
+        "type": "action",
+        "description": "Stop recording and playback voice to verify."
+      },
+      {
+        "type": "action",
+        "description": "Submit the voice recording as part of incident."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify submission success and that voice data is saved and analyzed."
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Toast Notifications Display and Behavior",
+    "description": "Ensure toast notifications appear on user actions such as submission success/failure and auto-dismiss properly.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Perform actions like incident submission or login."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify toast notification with appropriate message appears."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the toast auto-dismisses after a set timeout."
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Secured API Access and CORS Configuration",
+    "description": "Verify backend APIs reject unauthorized access, enforce role permissions and CORS policies function correctly during requests.",
+    "category": "security",
+    "priority": "Critical",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send API requests to protected endpoints without JWT."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify responses return unauthorized error."
+      },
+      {
+        "type": "action",
+        "description": "Send API requests with valid JWT but insufficient role permissions."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access denied errors."
+      },
+      {
+        "type": "action",
+        "description": "Send cross-origin request from unauthorized origin."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify CORS policy blocks request."
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Backend Performance: AI Analysis and Rule-based Threat Scoring",
+    "description": "Assess backend processing time for AI threat scoring (2-5 seconds) and rule-based scoring (under 500ms).",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit several incidents of various types."
+      },
+      {
+        "type": "assertion",
+        "description": "Measure and verify AI analysis completes within 2-5 seconds per incident."
+      },
+      {
+        "type": "assertion",
+        "description": "Measure rule-based scoring completes under 500ms."
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "Frontend Load and Responsiveness Across Devices",
+    "description": "Verify the frontend UI loads under 2 seconds and remains responsive and correctly styled on desktop and mobile browsers.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the application on desktop and mobile devices."
+      },
+      {
+        "type": "assertion",
+        "description": "Measure page load times and verify below 2 seconds."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI layout, animations, and components function correctly on all tested screen sizes."
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "Bulk Incident Submission API Functionality",
+    "description": "Test bulk incident upload API to accept multiple incident reports and process them with AI analysis and pattern detection.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Prepare a batch of valid incident reports in bulk submission format."
+      },
+      {
+        "type": "action",
+        "description": "Send bulk submission request to the backend."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all incidents are processed and stored with AI scores and validations."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify errors are properly returned for any malformed incidents without affecting successful ones."
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "Weekly Threat Intelligence Summary API Response",
+    "description": "Verify weekly threat summaries API returns accurate consolidated intelligence data for analyst review.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Query the weekly threat summary API endpoint."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response contains summary data in expected format."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify intelligence data matches aggregated incidents for the week."
+      }
+    ]
+  }
+]

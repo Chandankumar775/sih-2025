@@ -1,0 +1,240 @@
+{
+  "project_name": "RakshaNetra - WatchTower Sentinel",
+  "project_type": "fullstack_web_application",
+  "description": "AI-Powered Cyber Incident & Safety Portal for Defence Personnel - Smart India Hackathon 2025",
+  "tech_stack": {
+    "frontend": {
+      "framework": "React 18.3.1",
+      "language": "TypeScript 5.8.3",
+      "build_tool": "Vite 5.4.19",
+      "styling": "Tailwind CSS 3.4.17",
+      "ui_library": "shadcn/ui (Radix UI)",
+      "routing": "React Router 7.1.1",
+      "http_client": "Axios 1.13.2",
+      "state_management": "TanStack Query 5.83.0",
+      "i18n": "i18next 24.0.5 (English/Hindi)",
+      "icons": "Lucide React",
+      "animations": "Framer Motion"
+    },
+    "backend": {
+      "framework": "FastAPI 0.109.2",
+      "language": "Python 3.13",
+      "server": "Uvicorn",
+      "database": "SQLite 3",
+      "ai_service": "Google Gemini 2.0 Flash (google-generativeai 0.3.2)",
+      "authentication": "JWT (python-jose)",
+      "url_analysis": ["validators", "dnspython", "tldextract", "whois"],
+      "file_handling": "python-multipart",
+      "password_hashing": "passlib[bcrypt]"
+    },
+    "infrastructure": {
+      "dev_servers": {
+        "frontend_port": 8080,
+        "backend_port": 8000
+      },
+      "deployment": "Ready for Railway/Render/Docker",
+      "cors": "Enabled for local development"
+    }
+  },
+  "features": {
+    "core_features": [
+      "Multi-channel incident reporting (URL, SMS, Email, Social Media, File)",
+      "AI-powered threat analysis using Google Gemini",
+      "Real-time risk scoring (0-100)",
+      "Severity classification (low/medium/high/critical)",
+      "DNS verification for URLs",
+      "HTTP reachability testing",
+      "Rule-based pattern detection (fallback)",
+      "Incident dashboard with filtering",
+      "User authentication & authorization (JWT)",
+      "Role-based access control (Reporter/Analyst/Admin)",
+      "Bilingual UI (English/Hindi)",
+      "Dark/Light theme support",
+      "Live threat heatmap",
+      "Incident trends analytics"
+    ],
+    "defence_grade_features": [
+      "Threat repetition detection & pattern matching",
+      "Auto-escalation engine (5+ rules)",
+      "Geo-intelligence mapping (7 Defence Commands)",
+      "Army-aware AI context (CSD scams, fake recruitment, honeytrap detection)",
+      "Fake Army profile detector with confidence scoring",
+      "Incident lifecycle management with timeline",
+      "Weekly threat intelligence summaries",
+      "Bulk incident reporting API",
+      "Military-relevant threat flagging",
+      "Frequency counting for repeat threats"
+    ],
+    "security_features": [
+      "End-to-end encrypted data transmission",
+      "Secure file upload handling",
+      "JWT authentication with role validation",
+      "Protected routes with auth middleware",
+      "Input validation & sanitization",
+      "CORS configuration",
+      "Rate limiting ready (slowapi)"
+    ],
+    "ui_features": [
+      "Responsive cyber-themed design",
+      "Glass-morphism effects",
+      "Animated components (Framer Motion)",
+      "Loading states with custom hamster animation",
+      "Toast notifications",
+      "Modal dialogs for incident details",
+      "QR code scanner component",
+      "Voice recorder component",
+      "File upload with drag-and-drop"
+    ]
+  },
+  "api_endpoints": {
+    "authentication": [
+      "POST /api/auth/register - User registration",
+      "POST /api/auth/login - User login",
+      "GET /api/auth/me - Get current user"
+    ],
+    "incidents": [
+      "POST /api/report - Submit incident",
+      "GET /api/incidents - List all incidents",
+      "GET /api/incidents/{id} - Get incident details",
+      "GET /api/incidents/{id}/similar - Find similar threats",
+      "GET /api/incidents/escalated - Get auto-escalated incidents",
+      "POST /api/incidents/bulk - Bulk incident submission"
+    ],
+    "analytics": [
+      "GET /api/stats - Dashboard statistics",
+      "GET /api/trends - Incident trends over time"
+    ],
+    "geo_intelligence": [
+      "GET /api/geo/heatmap - Defence command heatmap data",
+      "GET /api/geo/trends - Geographic trends"
+    ],
+    "intelligence": [
+      "GET /api/intelligence/weekly - Weekly threat summary"
+    ]
+  },
+  "database_schema": {
+    "incidents": [
+      "id (TEXT PRIMARY KEY)",
+      "type (url/message/file/sms/email/social_media)",
+      "content (TEXT)",
+      "description (TEXT)",
+      "risk_score (INTEGER 0-100)",
+      "severity (low/medium/high/critical)",
+      "status (pending/reviewed/escalated/investigating/resolved)",
+      "ai_analysis (TEXT JSON)",
+      "reported_by (TEXT)",
+      "unit_name (TEXT)",
+      "created_at (TIMESTAMP)",
+      "updated_at (TIMESTAMP)",
+      "frequency_count (INTEGER - repeat occurrences)",
+      "geo_region (TEXT - Defence Command)",
+      "geo_latitude (REAL)",
+      "geo_longitude (REAL)",
+      "military_relevant (INTEGER - boolean flag)",
+      "escalated_flag (INTEGER - auto-escalation flag)",
+      "escalation_reason (TEXT)",
+      "escalation_timestamp (TIMESTAMP)",
+      "fake_profile_detected (INTEGER)",
+      "fake_profile_confidence (REAL 0-100)",
+      "fake_profile_indicators (TEXT JSON)"
+    ],
+    "threat_patterns": [
+      "id (INTEGER PRIMARY KEY)",
+      "incident_id (TEXT FK)",
+      "pattern_hash (TEXT - content hash)",
+      "domain_hash (TEXT - domain hash)",
+      "template_hash (TEXT - template pattern)",
+      "indicators (TEXT JSON - shared indicators)",
+      "created_at (TIMESTAMP)"
+    ],
+    "incident_timeline": [
+      "id (INTEGER PRIMARY KEY)",
+      "incident_id (TEXT FK)",
+      "event_type (created/updated/escalated/reviewed/resolved)",
+      "event_description (TEXT)",
+      "performed_by (TEXT - user/system)",
+      "timestamp (TIMESTAMP)"
+    ]
+  },
+  "key_modules": {
+    "backend_modules": [
+      "backend/server.py - Main FastAPI server",
+      "backend/modules/threat_matcher.py - Pattern recognition & similarity detection",
+      "backend/modules/auto_escalation.py - Auto-escalation rules engine",
+      "backend/modules/army_ai_context.py - Defence-specific AI context",
+      "backend/modules/geo_intelligence.py - Command mapping & heatmap",
+      "backend/modules/army_profile_detector.py - Fake profile detection",
+      "backend/migrations/upgrade_schema.py - Database migration script"
+    ],
+    "frontend_pages": [
+      "src/pages/Index.tsx - Landing page",
+      "src/pages/Login.tsx - Authentication",
+      "src/pages/Dashboard.tsx - Analyst dashboard",
+      "src/pages/ReportIncident.tsx - Incident submission",
+      "src/pages/IncidentDetails.tsx - Detailed view",
+      "src/pages/Trends.tsx - Analytics",
+      "src/pages/Register.tsx - User registration"
+    ],
+    "key_components": [
+      "src/components/Layout.tsx - Main layout wrapper",
+      "src/components/Navbar.tsx - Navigation",
+      "src/components/ProtectedRoute.tsx - Auth middleware",
+      "src/components/LiveThreatMap.tsx - Heatmap visualization",
+      "src/components/RiskMeter.tsx - Risk visualization",
+      "src/components/FileUpload.tsx - File handling",
+      "src/components/QRScanner.tsx - QR code scanning",
+      "src/components/VoiceRecorder.tsx - Audio recording"
+    ]
+  },
+  "testing_priority": [
+    {
+      "priority": "critical",
+      "areas": [
+        "User authentication & JWT flow",
+        "Incident submission with AI analysis",
+        "Dashboard data loading from backend",
+        "Auto-escalation triggering",
+        "Threat pattern matching",
+        "Protected route access control"
+      ]
+    },
+    {
+      "priority": "high",
+      "areas": [
+        "Fake Army profile detection",
+        "Geo-intelligence command mapping",
+        "Similar threat detection",
+        "Weekly intelligence summary",
+        "Bulk incident API",
+        "Frontend-backend API integration"
+      ]
+    },
+    {
+      "priority": "medium",
+      "areas": [
+        "Bilingual i18n switching",
+        "Theme toggle (dark/light)",
+        "File upload validation",
+        "QR scanner functionality",
+        "Voice recording",
+        "Toast notifications"
+      ]
+    }
+  ],
+  "environment": {
+    "required_env_vars": [
+      "GEMINI_API_KEY (Google AI key)",
+      "JWT_SECRET_KEY (for auth)",
+      "DATABASE_URL (SQLite path)"
+    ],
+    "ports": {
+      "backend": 8000,
+      "frontend": 8080
+    }
+  },
+  "startup_scripts": {
+    "windows": "START.bat - One-click startup for both servers",
+    "backend": "python backend/server.py",
+    "frontend": "npm run dev"
+  }
+}

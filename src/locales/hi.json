@@ -1,0 +1,80 @@
+{
+    "app": {
+        "name": "रक्षा नेत्र",
+        "tagline": "रक्षा के लिए एआई-संचालित साइबर घटना पोर्टल"
+    },
+    "login": {
+        "title": "केवल अधिकृत पहुंच",
+        "subtitle": "सुरक्षित पोर्टल तक पहुंचने के लिए अपनी साख दर्ज करें",
+        "email": "ईमेल पता",
+        "password": "पासवर्ड",
+        "rememberMe": "मुझे याद रखें",
+        "forgotPassword": "पासवर्ड भूल गए?",
+        "login": "सुरक्षित लॉगिन",
+        "dontHaveAccount": "खाता नहीं है?",
+        "register": "यहां पंजीकरण करें",
+        "demoCredentials": "डेमो क्रेडेंशियल",
+        "emailPlaceholder": "officer@army.mil",
+        "passwordPlaceholder": "••••••••"
+    },
+    "hero": {
+        "title": "अगली पीढ़ी की साइबर घटना रिपोर्टिंग और खुफिया मंच",
+        "secureAccess": "सुरक्षित पहुंच",
+        "secureAccessDesc": "संवेदनशील डेटा सुरक्षा के लिए एंड-टू-एंड एन्क्रिप्टेड संचार।",
+        "realTimeIntel": "रीयल-टाइम इंटेल",
+        "realTimeIntelDesc": "तत्काल खतरा विश्लेषण और स्वचालित जोखिम स्कोरिंग।"
+    },
+    "dashboard": {
+        "title": "डैशबोर्ड",
+        "overview": "अवलोकन",
+        "recentIncidents": "हाल की घटनाएं",
+        "statistics": "सांख्यिकी",
+        "totalIncidents": "कुल घटनाएं",
+        "criticalAlerts": "महत्वपूर्ण अलर्ट",
+        "underReview": "समीक्षाधीन",
+        "resolved": "हल हो गया",
+        "last24Hours": "पिछले 24 घंटे",
+        "last7Days": "पिछले 7 दिन",
+        "viewAll": "सभी देखें"
+    },
+    "report": {
+        "title": "घटना की रिपोर्ट करें",
+        "incidentType": "घटना प्रकार",
+        "url": "यूआरएल",
+        "message": "संदेश",
+        "file": "फ़ाइल",
+        "description": "विवरण",
+        "submit": "रिपोर्ट सबमिट करें",
+        "location": "स्थान",
+        "category": "श्रेणी",
+        "phishing": "फ़िशिंग",
+        "malware": "मैलवेयर",
+        "scam": "घोटाला",
+        "other": "अन्य"
+    },
+    "common": {
+        "loading": "लोड हो रहा है...",
+        "error": "त्रुटि",
+        "success": "सफलता",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "delete": "हटाएं",
+        "edit": "संपादित करें",
+        "close": "बंद करें",
+        "search": "खोजें",
+        "filter": "फ़िल्टर",
+        "export": "निर्यात",
+        "import": "आयात"
+    },
+    "severity": {
+        "critical": "गंभीर",
+        "high": "उच्च",
+        "medium": "मध्यम",
+        "low": "कम"
+    },
+    "roles": {
+        "reporter": "रिपोर्टर",
+        "analyst": "विश्लेषक",
+        "admin": "व्यवस्थापक"
+    }
+}

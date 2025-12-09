@@ -86,7 +86,7 @@ class IncidentCreate(BaseModel):
 
 class IncidentResponse(BaseModel):
     id: str
-    incident_id: str
+    incident_id: str;
     type: IncidentType
     content: Optional[str] = None
     file_url: Optional[str] = None

@@ -3,3 +3,4 @@
 # This is for trusted team members only - full environment replication
 
 # Empty gitignore - everything is tracked and committed
+node_modules

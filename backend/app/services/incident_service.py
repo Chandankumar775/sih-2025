@@ -4,6 +4,9 @@ No mock data - everything is stored and retrieved from local database!
 """
 
 import uuid
+import json
+import os
+from pathlib import Path
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 from app.core.database import (
@@ -62,6 +65,32 @@ async def create_incident(
     result = db_create_incident(incident_data)
     
     print(f"✅ REAL incident saved to database: {result['id']}")
+    
+    # Save incident to file in reports folder
+    try:
+        reports_dir = Path(__file__).parent.parent.parent / "reports"
+        reports_dir.mkdir(exist_ok=True)
+        
+        report_file = reports_dir / f"{incident_id}.json"
+        report_data = {
+            "incident_id": incident_id,
+            "db_id": result["id"],
+            "timestamp": datetime.now().isoformat(),
+            "type": incident_type.value,
+            "content": content or "",
+            "description": description,
+            "location": location,
+            "file_url": file_url,
+            "user_id": user_id,
+            "analysis": analysis.model_dump()
+        }
+        
+        with open(report_file, 'w', encoding='utf-8') as f:
+            json.dump(report_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"📄 Report saved to file: {report_file}")
+    except Exception as e:
+        print(f"⚠️  Warning: Could not save report to file: {e}")
     
     return {
         "success": True,

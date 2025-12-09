@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageSquare, FileText, Shield, Lock,
@@ -18,6 +19,7 @@ import { QRScanner } from "@/components/QRScanner";
 import { generateIncidentId, encryptContent } from "@/utils/encryption";
 import { useTranslation } from "react-i18next";
 import { incidentAPI } from "@/services/api";
+import { useAuth } from "@/hooks/useAuth";
 
 type IncidentType = "url" | "message" | "file";
 
@@ -41,6 +43,10 @@ interface AnalysisResult {
 
 const ReportIncident = () => {
   const { i18n } = useTranslation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const isAdmin = user?.role === 'admin';
+  
   const [incidentType, setIncidentType] = useState<IncidentType>("url");
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -126,6 +132,11 @@ const ReportIncident = () => {
 
       setAnalysisResult(analysisResult);
       setIncidentId(data.incident_id || data.id || generateIncidentId());
+      
+      // Redirect non-admin users to submitted report page
+      if (!isAdmin) {
+        navigate(`/submitted-report?id=${data.incident_id || data.id || generateIncidentId()}`);
+      }
     } catch (error: unknown) {
       console.error("Error submitting incident:", error);
       
@@ -146,7 +157,13 @@ const ReportIncident = () => {
         ],
       };
       setAnalysisResult(fallbackAnalysis);
-      setIncidentId(generateIncidentId());
+      const fallbackId = generateIncidentId();
+      setIncidentId(fallbackId);
+      
+      // Redirect non-admin users even on error
+      if (!isAdmin) {
+        navigate(`/submitted-report?id=${fallbackId}`);
+      }
     } finally {
       setIsAnalyzing(false);
       setIsSubmitting(false);
@@ -458,92 +475,94 @@ const ReportIncident = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">This may take a few seconds</p>
                       </motion.div>
                     ) : analysisResult ? (
-                      <motion.div
-                        key="result"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-5"
-                      >
-                        {/* Incident ID */}
-                        <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                          <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                      isAdmin ? (
+                        // ADMIN VIEW - Full Analysis
+                        <motion.div
+                          key="result"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="space-y-5"
+                        >
+                          {/* Incident ID */}
+                          <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                            <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                            <div>
+                              <span className="text-xs text-green-700 dark:text-green-400">Incident ID:</span>
+                              <span className="font-mono font-bold text-green-800 dark:text-green-300 ml-2">{incidentId}</span>
+                            </div>
+                          </div>
+
+                          {/* Risk Score */}
+                          <div className={`p-4 rounded-lg border ${getSeverityColor(analysisResult.riskScore)}`}>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-semibold">Risk Assessment</span>
+                              <span className="text-xs font-bold px-2 py-1 rounded bg-current/10">
+                                {getSeverityLabel(analysisResult.riskScore)}
+                              </span>
+                            </div>
+                            <div className="flex items-end gap-2">
+                              <span className="text-4xl font-bold">{analysisResult.riskScore}</span>
+                              <span className="text-sm mb-1">/100</span>
+                            </div>
+                            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-2">
+                              <div
+                                className={`h-2 rounded-full transition-all duration-500 ${analysisResult.riskScore >= 80 ? 'bg-red-500' :
+                                    analysisResult.riskScore >= 60 ? 'bg-orange-500' :
+                                      analysisResult.riskScore >= 40 ? 'bg-yellow-500' : 'bg-green-500'
+                                  }`}
+                                style={{ width: `${analysisResult.riskScore}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Summary */}
                           <div>
-                            <span className="text-xs text-green-700 dark:text-green-400">Incident ID:</span>
-                            <span className="font-mono font-bold text-green-800 dark:text-green-300 ml-2">{incidentId}</span>
-                          </div>
-                        </div>
-
-                        {/* Risk Score */}
-                        <div className={`p-4 rounded-lg border ${getSeverityColor(analysisResult.riskScore)}`}>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-semibold">Risk Assessment</span>
-                            <span className="text-xs font-bold px-2 py-1 rounded bg-current/10">
-                              {getSeverityLabel(analysisResult.riskScore)}
-                            </span>
-                          </div>
-                          <div className="flex items-end gap-2">
-                            <span className="text-4xl font-bold">{analysisResult.riskScore}</span>
-                            <span className="text-sm mb-1">/100</span>
-                          </div>
-                          <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-2">
-                            <div
-                              className={`h-2 rounded-full transition-all duration-500 ${analysisResult.riskScore >= 80 ? 'bg-red-500' :
-                                  analysisResult.riskScore >= 60 ? 'bg-orange-500' :
-                                    analysisResult.riskScore >= 40 ? 'bg-yellow-500' : 'bg-green-500'
-                                }`}
-                              style={{ width: `${analysisResult.riskScore}%` }}
-                            />
-                          </div>
-                        </div>
-
-                        {/* Summary */}
-                        <div>
-                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Analysis Summary</h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                            {analysisResult.summary}
-                          </p>
-                        </div>
-
-                        {/* Detailed Threat Description */}
-                        {analysisResult.detailedDescription && (
-                          <div className="border-l-4 border-orange-500 pl-4">
-                            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 flex items-center gap-2">
-                              <FileText className="h-4 w-4 text-orange-500" />
-                              Detailed Threat Analysis
-                            </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                              {analysisResult.detailedDescription}
+                            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Analysis Summary</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                              {analysisResult.summary}
                             </p>
                           </div>
-                        )}
 
-                        {/* Threat Classification */}
-                        {(analysisResult.threatType || analysisResult.attackVector || analysisResult.potentialImpact) && (
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {analysisResult.threatType && (
-                              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
-                                <div className="text-xs font-semibold text-red-700 dark:text-red-400 mb-1">Threat Type</div>
-                                <div className="text-sm font-medium text-red-900 dark:text-red-300">{analysisResult.threatType}</div>
-                              </div>
-                            )}
-                            {analysisResult.attackVector && (
-                              <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg border border-orange-200 dark:border-orange-800">
-                                <div className="text-xs font-semibold text-orange-700 dark:text-orange-400 mb-1">Attack Vector</div>
-                                <div className="text-sm font-medium text-orange-900 dark:text-orange-300">{analysisResult.attackVector}</div>
-                              </div>
-                            )}
-                            {analysisResult.potentialImpact && (
-                              <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg border border-purple-200 dark:border-purple-800">
-                                <div className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">Potential Impact</div>
-                                <div className="text-sm font-medium text-purple-900 dark:text-purple-300">{analysisResult.potentialImpact}</div>
-                              </div>
-                            )}
-                          </div>
-                        )}
+                          {/* Detailed Threat Description */}
+                          {analysisResult.detailedDescription && (
+                            <div className="border-l-4 border-orange-500 pl-4">
+                              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2 flex items-center gap-2">
+                                <FileText className="h-4 w-4 text-orange-500" />
+                                Detailed Threat Analysis
+                              </h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {analysisResult.detailedDescription}
+                              </p>
+                            </div>
+                          )}
 
-                        {/* Technical Details */}
-                        {analysisResult.technicalDetails && Object.keys(analysisResult.technicalDetails).length > 0 && (
-                          <div className="bg-gray-900 dark:bg-gray-800 p-4 rounded-lg">
+                          {/* Threat Classification */}
+                          {(analysisResult.threatType || analysisResult.attackVector || analysisResult.potentialImpact) && (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              {analysisResult.threatType && (
+                                <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
+                                  <div className="text-xs font-semibold text-red-700 dark:text-red-400 mb-1">Threat Type</div>
+                                  <div className="text-sm font-medium text-red-900 dark:text-red-300">{analysisResult.threatType}</div>
+                                </div>
+                              )}
+                              {analysisResult.attackVector && (
+                                <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg border border-orange-200 dark:border-orange-800">
+                                  <div className="text-xs font-semibold text-orange-700 dark:text-orange-400 mb-1">Attack Vector</div>
+                                  <div className="text-sm font-medium text-orange-900 dark:text-orange-300">{analysisResult.attackVector}</div>
+                                </div>
+                              )}
+                              {analysisResult.potentialImpact && (
+                                <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg border border-purple-200 dark:border-purple-800">
+                                  <div className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">Potential Impact</div>
+                                  <div className="text-sm font-medium text-purple-900 dark:text-purple-300">{analysisResult.potentialImpact}</div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Technical Details */}
+                          {analysisResult.technicalDetails && Object.keys(analysisResult.technicalDetails).length > 0 && (
+                            <div className="bg-gray-900 dark:bg-gray-800 p-4 rounded-lg">
                             <h4 className="text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
                               <Shield className="h-4 w-4 text-cyan-400" />
                               Technical Intelligence
@@ -634,6 +653,74 @@ const ReportIncident = () => {
                           </button>
                         </div>
                       </motion.div>
+                      ) : (
+                        // REPORTER VIEW - Simple Thank You
+                        <motion.div
+                          key="reporter-thanks"
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="text-center py-8 space-y-6"
+                        >
+                          {/* Success Icon */}
+                          <div className="flex justify-center">
+                            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                              <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
+                            </div>
+                          </div>
+
+                          {/* Thank You Message */}
+                          <div>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                              Thank You for Reporting!
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400">
+                              Your report has been successfully submitted to our security team.
+                            </p>
+                          </div>
+
+                          {/* Incident ID */}
+                          <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                            <div className="text-sm text-blue-700 dark:text-blue-400 font-medium mb-2">
+                              Your Incident ID
+                            </div>
+                            <div className="font-mono text-2xl font-bold text-blue-900 dark:text-blue-300 tracking-wider">
+                              {incidentId}
+                            </div>
+                            <div className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                              Please save this ID for your records
+                            </div>
+                          </div>
+
+                          {/* Contact Information */}
+                          <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-5 text-left">
+                            <div className="flex items-start gap-3">
+                              <Info className="h-5 w-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                                  <strong>For further concerns or updates</strong>, please reach out to:
+                                </p>
+                                <a
+                                  href="mailto:contact@rakshanetra.mod.gov.in"
+                                  className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm"
+                                >
+                                  contact@rakshanetra.mod.gov.in
+                                </a>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                  Include your Incident ID in all correspondence
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Action Button */}
+                          <button
+                            onClick={resetForm}
+                            className="w-full py-3 px-6 bg-[#06038D] dark:bg-blue-600 text-white font-medium rounded-lg hover:bg-[#06038D]/90 dark:hover:bg-blue-700 transition-colors"
+                          >
+                            Report Another Incident
+                          </button>
+                        </motion.div>
+                      )
                     ) : (
                       <motion.div
                         key="empty"

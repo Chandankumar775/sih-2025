@@ -133,11 +133,11 @@ async def require_role(required_roles: list):
 
 # Pre-made role dependencies
 async def get_analyst_or_admin(current_user: dict = Depends(get_current_user)):
-    """Require analyst or admin role"""
-    if current_user.get("role") not in ["analyst", "admin"]:
+    """Require admin role (legacy name kept for compatibility)"""
+    if current_user.get("role") != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Analyst or Admin access required",
+            detail="Admin access required",
         )
     return current_user
 

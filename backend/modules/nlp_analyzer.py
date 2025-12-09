@@ -5,18 +5,48 @@ Extracts entities, detects urgency, analyzes sentiment
 """
 
 import re
-import spacy
-from textblob import TextBlob
-from langdetect import detect, LangDetectException
-import phonenumbers
 from typing import Dict, List, Any
 
-# Load spaCy model
+# Optional imports - spacy has Python 3.14 compatibility issues
 try:
-    nlp = spacy.load("en_core_web_sm")
-except:
-    print("⚠️  spaCy model not loaded. Run: python -m spacy download en_core_web_sm")
-    nlp = None
+    import spacy
+    SPACY_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️  spaCy not available: {e}")
+    spacy = None
+    SPACY_AVAILABLE = False
+
+try:
+    from textblob import TextBlob
+    TEXTBLOB_AVAILABLE = True
+except ImportError:
+    TextBlob = None
+    TEXTBLOB_AVAILABLE = False
+
+try:
+    from langdetect import detect, LangDetectException
+    LANGDETECT_AVAILABLE = True
+except ImportError:
+    detect = None
+    LangDetectException = Exception
+    LANGDETECT_AVAILABLE = False
+
+try:
+    import phonenumbers
+    PHONENUMBERS_AVAILABLE = True
+except ImportError:
+    phonenumbers = None
+    PHONENUMBERS_AVAILABLE = False
+
+# Load spaCy model if available
+nlp = None
+if SPACY_AVAILABLE:
+    try:
+        nlp = spacy.load("en_core_web_sm")
+    except Exception as e:
+        print(f"⚠️  spaCy model not loaded: {e}")
+        print("   Run: python -m spacy download en_core_web_sm")
+        nlp = None
 
 
 def analyze_text(content: str, content_type: str) -> Dict[str, Any]:
@@ -30,8 +60,22 @@ def analyze_text(content: str, content_type: str) -> Dict[str, Any]:
     Returns:
         Dictionary with NLP analysis results
     """
-    print(f"\n🔍 NLP Analysis Starting...")
+    print(f"\n🔍 NLP Analysis Starting (Fallback Mode: {not SPACY_AVAILABLE})...")
     print(f"Content length: {len(content)} characters")
+    
+    # If NLP libraries aren't available, return basic analysis
+    if not SPACY_AVAILABLE:
+        return {
+            "entities": extract_entities(content),
+            "language": "unknown",
+            "sentiment": {"polarity": 0.0, "subjectivity": 0.5, "label": "neutral"},
+            "urgency_score": 50,
+            "scam_keywords": detect_scam_keywords(content),
+            "threat_indicators": detect_threat_patterns(content),
+            "analysis_type": "Basic Pattern Matching",
+            "confidence": 0.60,
+            "note": "Limited analysis - NLP libraries not available"
+        }
     
     result = {
         "entities": extract_entities(content),
@@ -66,12 +110,13 @@ def extract_entities(text: str) -> Dict[str, List[str]]:
     }
     
     # Extract phone numbers using phonenumbers library
-    try:
-        for match in phonenumbers.PhoneNumberMatcher(text, "IN"):
-            phone = phonenumbers.format_number(match.number, phonenumbers.PhoneNumberFormat.E164)
-            entities["phone_numbers"].append(phone)
-    except:
-        pass
+    if PHONENUMBERS_AVAILABLE:
+        try:
+            for match in phonenumbers.PhoneNumberMatcher(text, "IN"):
+                phone = phonenumbers.format_number(match.number, phonenumbers.PhoneNumberFormat.E164)
+                entities["phone_numbers"].append(phone)
+        except:
+            pass
     
     # Extract phone numbers using regex (backup)
     phone_patterns = [
@@ -146,6 +191,9 @@ def extract_entities(text: str) -> Dict[str, List[str]]:
 
 def detect_language(text: str) -> str:
     """Detect language of text"""
+    if not LANGDETECT_AVAILABLE:
+        return "Unknown"
+    
     try:
         lang_code = detect(text)
         lang_map = {
@@ -159,12 +207,38 @@ def detect_language(text: str) -> str:
             'mr': 'Marathi'
         }
         return lang_map.get(lang_code, lang_code.upper())
-    except LangDetectException:
+    except (LangDetectException, Exception):
         return "Unknown"
 
 
 def analyze_sentiment(text: str) -> Dict[str, Any]:
     """Analyze sentiment and emotional tone"""
+    if not TEXTBLOB_AVAILABLE:
+        # Basic pattern-based sentiment
+        threat_words = ['attack', 'threat', 'danger', 'kill', 'bomb', 'weapon', 'terror']
+        positive_words = ['safe', 'secure', 'protected', 'help']
+        
+        text_lower = text.lower()
+        threat_count = sum(1 for word in threat_words if word in text_lower)
+        positive_count = sum(1 for word in positive_words if word in text_lower)
+        
+        if threat_count > positive_count:
+            sentiment = "Negative/Threatening"
+            polarity = -0.5
+        elif positive_count > threat_count:
+            sentiment = "Positive"
+            polarity = 0.5
+        else:
+            sentiment = "Neutral"
+            polarity = 0.0
+        
+        return {
+            "sentiment": sentiment,
+            "polarity": polarity,
+            "subjectivity": 0.5,
+            "emotional_tone": "Urgent" if threat_count > 0 else "Calm"
+        }
+    
     try:
         blob = TextBlob(text)
         polarity = blob.sentiment.polarity  # -1 to 1

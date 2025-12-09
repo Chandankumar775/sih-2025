@@ -8,10 +8,10 @@
 
 @layer base {
   :root {
-    /* Crisp Light Mode - High Contrast */
-    --background: 218 25% 97%;
-    /* Subtle blue-gray tint #F5F7FA */
-    --foreground: 215 25% 12%;
+    /* Light Mode - Default */
+    --background: 0 0% 100%;
+    /* Pure white background */
+    --foreground: 0 0% 0%;
     /* Dark slate #1C2432 - high contrast */
 
     --card: 0 0% 100%;

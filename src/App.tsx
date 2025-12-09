@@ -22,6 +22,9 @@ import Unauthorized from "./pages/Unauthorized";
 // Lazy loaded pages
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const ReportIncident = lazy(() => import("./pages/ReportIncident"));
+const SubmittedReport = lazy(() => import("./pages/SubmittedReport"));
+const AnalysisAdmin = lazy(() => import("./pages/AnalysisAdmin"));
+const ZeroTrust = lazy(() => import("./pages/ZeroTrust"));
 const IncidentDetails = lazy(() => import("./pages/IncidentDetails"));
 const Trends = lazy(() => import("./pages/Trends"));
 
@@ -36,6 +39,7 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <div className="min-h-screen bg-[url('/media/bg.png')] bg-cover bg-center bg-fixed">
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -47,11 +51,11 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
 
-            {/* Protected Routes */}
+            {/* Protected Routes - All authenticated users can access */}
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute allowedRoles={["analyst", "admin"]}>
+                <ProtectedRoute allowedRoles={["admin"]}>
                   <Dashboard />
                 </ProtectedRoute>
               }
@@ -59,15 +63,39 @@ const App = () => (
             <Route
               path="/report"
               element={
-                <ProtectedRoute allowedRoles={["reporter", "analyst", "admin"]}>
+                <ProtectedRoute>
                   <ReportIncident />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/submitted-report"
+              element={
+                <ProtectedRoute>
+                  <SubmittedReport />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analysis-admin"
+              element={
+                <ProtectedRoute>
+                  <AnalysisAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/zero-trust"
+              element={
+                <ProtectedRoute>
+                  <ZeroTrust />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/incident/:id"
               element={
-                <ProtectedRoute allowedRoles={["analyst", "admin"]}>
+                <ProtectedRoute>
                   <IncidentDetails />
                 </ProtectedRoute>
               }
@@ -75,7 +103,7 @@ const App = () => (
             <Route
               path="/trends"
               element={
-                <ProtectedRoute allowedRoles={["analyst", "admin"]}>
+                <ProtectedRoute>
                   <Trends />
                 </ProtectedRoute>
               }
@@ -86,6 +114,7 @@ const App = () => (
           </Routes>
         </Suspense>
       </BrowserRouter>
+      </div>
     </TooltipProvider>
   </QueryClientProvider>
 );

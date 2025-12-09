@@ -55,7 +55,19 @@ const Trends = () => {
 
   return (
     <Layout>
-      <div className="gov-container py-8 min-h-screen">
+      {/* Government Header */}
+      <div className="bg-white border-b-4 border-orange-500">
+        <div className="max-w-[1400px] mx-auto px-8 py-3 flex items-center gap-3">
+          <img src="/media/logo.png" alt="Emblem" className="h-12" />
+          <div>
+            <h1 className="text-sm font-semibold text-gray-900">भारत सरकार | Government of India</h1>
+            <p className="text-xs text-gray-600">रक्षा मंत्रालय | Ministry of Defence</p>
+            <p className="text-xs text-blue-900 font-medium">Incident Analytics & Trends | घटना विश्लेषण और रुझान</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="gov-container py-8 min-h-screen bg-gradient-to-b from-white to-orange-50">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,58 +75,58 @@ const Trends = () => {
         >
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2 font-heading">
-              <TrendingUp className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2 font-heading">
+              <TrendingUp className="h-8 w-8 text-blue-900" />
               Incident Analytics & Trends
             </h1>
-            <p className="text-muted-foreground mt-1 text-lg">
+            <p className="text-gray-600 mt-1 text-lg">
               Overview of cyber threat patterns and incident statistics
             </p>
           </div>
 
           {/* Summary Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="glass-card p-6 border-l-4 border-l-primary">
+            <div className="bg-white p-6 border-l-4 border-l-blue-900 shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-xl">
-                  <Shield className="h-6 w-6 text-primary" />
+                <div className="p-3 bg-blue-100">
+                  <Shield className="h-6 w-6 text-blue-900" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-foreground font-heading">107</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">This Month</p>
+                  <p className="text-3xl font-bold text-gray-900 font-heading">107</p>
+                  <p className="text-xs text-gray-600 uppercase tracking-wider">This Month</p>
                 </div>
               </div>
             </div>
-            <div className="glass-card p-6 border-l-4 border-l-destructive">
+            <div className="bg-white p-6 border-l-4 border-l-red-600 shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-destructive/10 rounded-xl">
-                  <AlertTriangle className="h-6 w-6 text-destructive" />
+                <div className="p-3 bg-red-100">
+                  <AlertTriangle className="h-6 w-6 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-foreground font-heading">15</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Critical</p>
+                  <p className="text-3xl font-bold text-gray-900 font-heading">15</p>
+                  <p className="text-xs text-gray-600 uppercase tracking-wider">Critical</p>
                 </div>
               </div>
             </div>
-            <div className="glass-card p-6 border-l-4 border-l-emerald-500">
+            <div className="bg-white p-6 border-l-4 border-l-emerald-600 shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-emerald-500/10 rounded-xl">
-                  <Calendar className="h-6 w-6 text-emerald-500" />
+                <div className="p-3 bg-emerald-100">
+                  <Calendar className="h-6 w-6 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-foreground font-heading">92%</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Resolved</p>
+                  <p className="text-3xl font-bold text-gray-900 font-heading">92%</p>
+                  <p className="text-xs text-gray-600 uppercase tracking-wider">Resolved</p>
                 </div>
               </div>
             </div>
-            <div className="glass-card p-6 border-l-4 border-l-accent">
+            <div className="bg-white p-6 border-l-4 border-l-orange-500 shadow-sm">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-accent/10 rounded-xl">
-                  <Activity className="h-6 w-6 text-accent" />
+                <div className="p-3 bg-orange-100">
+                  <Activity className="h-6 w-6 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-foreground font-heading">+37%</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">vs Last Month</p>
+                  <p className="text-3xl font-bold text-gray-900 font-heading">+37%</p>
+                  <p className="text-xs text-gray-600 uppercase tracking-wider">vs Last Month</p>
                 </div>
               </div>
             </div>
@@ -122,8 +134,8 @@ const Trends = () => {
 
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {/* Weekly Incidents */}
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-bold text-foreground mb-6 uppercase tracking-wider">
+            <div className="bg-white border-2 border-gray-300 p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wider">
                 Weekly Incident Pattern
               </h3>
               <div className="h-72">
@@ -172,8 +184,8 @@ const Trends = () => {
             </div>
 
             {/* Risk Distribution */}
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-bold text-foreground mb-6 uppercase tracking-wider">
+            <div className="bg-white border-2 border-gray-300 p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wider">
                 Risk Level Distribution
               </h3>
               <div className="h-72 flex items-center">
@@ -211,8 +223,8 @@ const Trends = () => {
                         className="w-3 h-3 rounded-full shadow-[0_0_10px_currentColor]"
                         style={{ backgroundColor: item.color, color: item.color }}
                       />
-                      <span className="text-sm text-muted-foreground font-medium">
-                        {item.name}: <span className="text-foreground">{item.value}%</span>
+                      <span className="text-sm text-gray-600 font-medium">
+                        {item.name}: <span className="text-gray-900">{item.value}%</span>
                       </span>
                     </div>
                   ))}
@@ -223,8 +235,8 @@ const Trends = () => {
 
           <div className="grid lg:grid-cols-2 gap-6 mb-6">
             {/* Monthly Trend */}
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-bold text-foreground mb-6 uppercase tracking-wider">
+            <div className="bg-white border-2 border-gray-300 p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wider">
                 Monthly Incident Trend
               </h3>
               <div className="h-72">
@@ -265,8 +277,8 @@ const Trends = () => {
             </div>
 
             {/* Incident Types */}
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-bold text-foreground mb-6 uppercase tracking-wider">
+            <div className="bg-white border-2 border-gray-300 p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wider">
                 Incidents by Type
               </h3>
               <div className="h-72">
@@ -305,44 +317,44 @@ const Trends = () => {
           </div>
 
           {/* Top Malicious Domains */}
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-bold text-foreground mb-6 uppercase tracking-wider">
+          <div className="bg-white border-2 border-gray-300 p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wider">
               Top Malicious Domains
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-4 px-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  <tr className="border-b-2 border-gray-300">
+                    <th className="text-left py-4 px-4 text-xs font-bold text-gray-600 uppercase tracking-wider">
                       Rank
                     </th>
-                    <th className="text-left py-4 px-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    <th className="text-left py-4 px-4 text-xs font-bold text-gray-600 uppercase tracking-wider">
                       Domain Pattern
                     </th>
-                    <th className="text-left py-4 px-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    <th className="text-left py-4 px-4 text-xs font-bold text-gray-600 uppercase tracking-wider">
                       Incidents
                     </th>
-                    <th className="text-left py-4 px-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    <th className="text-left py-4 px-4 text-xs font-bold text-gray-600 uppercase tracking-wider">
                       Threat Level
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {topDomains.map((item, index) => (
-                    <tr key={index} className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
-                      <td className="py-4 px-4 text-sm text-foreground font-medium">
+                    <tr key={index} className="border-b border-gray-200 last:border-0 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-4 text-sm text-gray-900 font-medium">
                         #{index + 1}
                       </td>
-                      <td className="py-4 px-4 font-mono text-sm text-primary">
+                      <td className="py-4 px-4 font-mono text-sm text-blue-900">
                         {item.domain}
                       </td>
-                      <td className="py-4 px-4 text-sm text-foreground font-bold">
+                      <td className="py-4 px-4 text-sm text-gray-900 font-bold">
                         {item.incidents}
                       </td>
                       <td className="py-4 px-4">
-                        <div className="w-full bg-white/10 rounded-full h-2 max-w-[200px]">
+                        <div className="w-full bg-gray-200 h-2 max-w-[200px]">
                           <div
-                            className="bg-destructive h-2 rounded-full shadow-[0_0_10px_rgba(var(--destructive),0.5)]"
+                            className="bg-red-600 h-2"
                             style={{ width: `${(item.incidents / 15) * 100}%` }}
                           />
                         </div>

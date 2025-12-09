@@ -18,7 +18,7 @@ router = APIRouter(prefix="/analytics", tags=["Analytics"])
 @router.get("/stats", response_model=StatsResponse)
 async def get_stats(current_user: dict = Depends(get_analyst_or_admin)):
     """
-    Get incident statistics (Analysts/Admins only)
+    Get incident statistics (Admins only)
     """
     stats = await get_incident_stats()
     return StatsResponse(**stats)

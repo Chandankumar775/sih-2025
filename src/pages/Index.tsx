@@ -50,16 +50,28 @@ const Index = () => {
 
   return (
     <Layout>
+      {/* Government Header */}
+      <div className="bg-white border-b-4 border-orange-500">
+        <div className="max-w-[1400px] mx-auto px-8 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <img src="/media/logo.png" alt="Emblem" className="h-12" />
+            <div>
+              <h1 className="text-sm font-semibold text-gray-900">भारत सरकार | Government of India</h1>
+              <p className="text-xs text-gray-600">रक्षा मंत्रालय | Ministry of Defence</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="text-xs px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">A-</button>
+            <button className="text-sm px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">A</button>
+            <button className="text-base px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">A+</button>
+            <div className="h-8 w-px bg-gray-300 mx-2"></div>
+            <button className="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">हिन्दी</button>
+          </div>
+        </div>
+      </div>
+      
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
-          <div className="absolute inset-0 animate-grid opacity-20" />
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: "2s" }} />
-        </div>
-
         <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8">
           <div className="grid grid-cols-2 gap-16 items-center">
             <motion.div
@@ -68,40 +80,30 @@ const Index = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="col-span-1 text-left"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6 animate-fade-in">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                </span>
-                System Operational
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border-l-4 border-green-600 text-sm mb-6">
+                <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+                <span className="text-green-800 font-medium">Service Active</span>
               </div>
 
-              <h1 className="text-6xl font-bold mb-6 leading-tight font-heading">
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50">
-                  Advanced
-                </span>
-                <span className="block text-glow">
-                  Cyber Defence
-                </span>
+              <h1 className="text-5xl font-bold mb-4 leading-tight text-gray-900">
+                साइबर सुरक्षा पोर्टल
               </h1>
+              <h2 className="text-4xl font-semibold mb-6 text-blue-900">
+                Cyber Security Portal
+              </h2>
 
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                {APP_TAGLINE}. Deploying next-generation AI sentinels to protect national digital infrastructure.
+              <p className="text-lg text-gray-700 mb-8 leading-relaxed border-l-4 border-orange-500 pl-4">
+                An initiative by the Ministry of Defence for reporting and analyzing cyber security incidents. 
+                Protecting India's digital infrastructure through AI-powered threat detection.
               </p>
 
               <div className="flex flex-row gap-4 justify-start">
                 <Link
-                  to="/report"
-                  className="px-8 py-3 bg-gradient-to-br from-white/10 to-white/5 hover:from-white/20 hover:to-white/10 rounded-lg border border-white/20 font-semibold tracking-wider uppercase text-sm transition-all duration-300 shadow-lg hover:shadow-primary/20 inline-flex items-center justify-center gap-2 group"
-                >
-                  Initiate Report
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-                <Link
                   to="/login"
-                  className="px-8 py-3 rounded-lg border border-white/10 text-foreground font-medium hover:bg-white/5 transition-all duration-300 hover:border-primary/50"
+                  className="px-8 py-3 bg-blue-900 text-white hover:bg-blue-800 font-medium text-sm transition-all duration-200 inline-flex items-center justify-center gap-2 group shadow-md"
                 >
-                  Analyst Access
+                  Official Login
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </motion.div>
@@ -131,9 +133,9 @@ const Index = () => {
       </section>
 
       {/* Stats Bar */}
-      <section className="border-y border-white/5 bg-black/20 backdrop-blur-sm">
+      <section className="bg-gradient-to-r from-orange-50 to-white border-y border-orange-200">
         <div className="max-w-[1400px] mx-auto px-8">
-          <div className="grid grid-cols-4 divide-x divide-white/5">
+          <div className="grid grid-cols-4 divide-x divide-orange-200">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
@@ -141,12 +143,12 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="py-8 text-center group hover:bg-white/5 transition-colors"
+                className="py-8 text-center group hover:bg-orange-50 transition-colors"
               >
-                <p className="text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-primary to-accent mb-1 font-heading">
+                <p className="text-3xl lg:text-4xl font-bold text-blue-900 mb-1">
                   {stat.value}
                 </p>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</p>
+                <p className="text-xs text-gray-600 uppercase tracking-wide font-medium">{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -162,11 +164,13 @@ const Index = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 font-heading">
-              Tactical Capabilities
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Equipped with state-of-the-art tools for comprehensive threat detection and neutralization.
+            <div className="inline-block border-b-4 border-orange-500 pb-2 mb-4">
+              <h2 className="text-3xl font-bold text-gray-900">
+                Key Features | मुख्य विशेषताएं
+              </h2>
+            </div>
+            <p className="text-gray-700 max-w-2xl mx-auto">
+              Comprehensive tools for cyber threat detection and incident management
             </p>
           </motion.div>
 
@@ -178,15 +182,15 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="glass-card p-6 group hover:-translate-y-2 transition-all duration-300"
+                className="bg-white border-l-4 border-blue-900 shadow-md p-6 group hover:shadow-lg transition-all duration-200"
               >
-                <div className={`w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${feature.color}`}>
-                  <feature.icon className="h-6 w-6" />
+                <div className="w-12 h-12 bg-blue-50 flex items-center justify-center mb-4">
+                  <feature.icon className="h-6 w-6 text-blue-900" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3 font-heading">
+                <h3 className="text-lg font-bold text-gray-900 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -196,7 +200,7 @@ const Index = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 bg-secondary/20 relative">
+      <section className="py-24 bg-gradient-to-b from-white to-orange-50 relative">
         <div className="gov-container">
           <motion.div
             initial={{ opacity: 0 }}

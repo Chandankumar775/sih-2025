@@ -17,15 +17,41 @@ import urllib.request
 import urllib.error
 import json
 from datetime import datetime
+from pathlib import Path
+
+# Create reports directory if it doesn't exist
+REPORTS_DIR = Path(__file__).parent / "reports"
+REPORTS_DIR.mkdir(exist_ok=True)
 
 # Import defence feature modules
-from modules import threat_matcher, auto_escalation, army_ai_context, geo_intelligence, nlp_analyzer, sandbox_analyzer
+from modules import threat_matcher, auto_escalation, army_ai_context, geo_intelligence
+
+# Optional imports (may not have dependencies)
+try:
+    from modules import nlp_analyzer
+except ImportError:
+    nlp_analyzer = None
+    print("⚠️  nlp_analyzer module not available (missing spacy)")
+
+try:
+    from modules import sandbox_analyzer
+except ImportError:
+    sandbox_analyzer = None
+    print("⚠️  sandbox_analyzer module not available")
 
 # Import Zero Trust middleware
-from middleware.zero_trust_middleware import ZeroTrustMiddleware
+try:
+    from middleware.zero_trust_middleware import ZeroTrustMiddleware
+except ImportError:
+    ZeroTrustMiddleware = None
+    print("⚠️  ZeroTrustMiddleware not available")
 
 # Import authentication manager
-from modules.auth_manager import auth_manager
+try:
+    from modules.auth_manager import auth_manager
+except ImportError:
+    auth_manager = None
+    print("⚠️  auth_manager not available")
 
 # ==================== GEMINI AI CONFIG ====================
 GEMINI_API_KEY = "AIzaSyB6n5P5sYNF-5ORqDYz4DaN05NQ35FPF20"
@@ -665,7 +691,7 @@ async def register(
 ):
     """
     Register a new user
-    Roles: reporter (default), analyst, admin
+    Roles: reporter (default), admin
     """
     result = auth_manager.register_user(
         username=username,
@@ -880,6 +906,42 @@ async def create_incident(
     conn.commit()
     conn.close()
     
+    # === SAVE REPORT AS JSON FILE ===
+    report_data = {
+        "incident_id": incident_id,
+        "type": type,
+        "content": content_to_analyze,
+        "description": description,
+        "location": location,
+        "unit_name": unit_name,
+        "risk_score": analysis["risk_score"],
+        "severity": analysis["severity"],
+        "status": "pending",
+        "indicators": analysis["indicators"],
+        "recommendations": analysis["recommendations"],
+        "created_at": datetime.utcnow().isoformat(),
+        "geo_region": geo_region,
+        "frequency_count": frequency_count,
+        "military_relevant": military_relevant,
+        "fake_profile_detected": fake_profile_detected,
+        "reporter_id": reporter_id,
+        "reporter_username": reporter_username,
+        "ai_analysis": analysis,
+        "sandbox_analysis": sandbox_result,
+        "army_context": army_context,
+        "similar_threats": similar_threats[:5] if similar_threats else [],
+        "related_incident_ids": related_ids,
+        "escalated": escalation_result['escalated'],
+        "escalation_reason": escalation_result.get('reason')
+    }
+    
+    # Save to reports directory
+    report_file = REPORTS_DIR / f"{incident_id}.json"
+    with open(report_file, 'w', encoding='utf-8') as f:
+        json.dump(report_data, f, indent=2, ensure_ascii=False)
+    
+    print(f"📄 Report saved: {report_file}")
+    
     # === DEFENCE FEATURE 4: Auto-Escalation ===
     escalation_data = {
         'risk_score': analysis['risk_score'],
@@ -914,7 +976,7 @@ async def create_incident(
         )
     
     # ===== ROLE-BASED RESPONSE =====
-    # Reporters get minimal confirmation, Admins/Analysts get full analysis
+    # Reporters get minimal confirmation, Admins get full analysis
     
     if user_role == "reporter":
         # REPORTER VIEW: Only confirmation, NO AI analysis details
@@ -928,7 +990,7 @@ async def create_incident(
         }
         print(f"✅ Reporter response (limited): No analysis shown to {reporter_username}")
     else:
-        # ADMIN/ANALYST VIEW: Full AI analysis and intelligence
+        # ADMIN VIEW: Full AI analysis and intelligence
         response = {
             "success": True,
             "incident_id": incident_id,
@@ -956,25 +1018,94 @@ async def create_incident(
             "fake_profile_detected": fake_profile_detected,
             "escalated": escalation_result['escalated'],
             "escalation_reason": escalation_result.get('reason'),
-            # Reporter information (only visible to admin/analyst)
+            # Reporter information (only visible to admin)
             "reporter_id": reporter_id,
             "reporter_username": reporter_username
         }
-        print(f"✅ Admin/Analyst response (full): Complete analysis shown to {reporter_username}")
+        print(f"✅ Admin response (full): Complete analysis shown to {reporter_username}")
     
     return response
 
 @app.get("/api/incidents")
 async def get_incidents():
-    """Get all incidents"""
-    conn = get_db()
-    cursor = conn.execute("SELECT * FROM incidents ORDER BY created_at DESC LIMIT 100")
-    rows = cursor.fetchall()
-    conn.close()
-    
+    """Get all incidents from reports folder"""
     incidents = []
-    for row in rows:
-        incidents.append({
+    
+    try:
+        # Read all JSON files from reports directory
+        report_files = sorted(REPORTS_DIR.glob("*.json"), key=os.path.getmtime, reverse=True)
+        
+        for report_file in report_files[:100]:  # Limit to 100 most recent
+            try:
+                with open(report_file, 'r', encoding='utf-8') as f:
+                    report_data = json.load(f)
+                    
+                    # Extract essential fields for list view
+                    incidents.append({
+                        "id": report_data.get("incident_id"),
+                        "type": report_data.get("type"),
+                        "content": report_data.get("content"),
+                        "description": report_data.get("description"),
+                        "summary": report_data.get("content", "")[:100],
+                        "risk_score": report_data.get("risk_score"),
+                        "severity": report_data.get("severity"),
+                        "status": report_data.get("status"),
+                        "created_at": report_data.get("created_at"),
+                        "geo_region": report_data.get("geo_region"),
+                        "reporter_username": report_data.get("reporter_username"),
+                        "escalated": report_data.get("escalated", False)
+                    })
+            except Exception as e:
+                print(f"Error reading report file {report_file}: {e}")
+                continue
+        
+        return {"incidents": incidents, "total": len(incidents)}
+    
+    except Exception as e:
+        print(f"Error reading reports directory: {e}")
+        # Fallback to database if reports folder fails
+        conn = get_db()
+        cursor = conn.execute("SELECT * FROM incidents ORDER BY created_at DESC LIMIT 100")
+        rows = cursor.fetchall()
+        conn.close()
+        
+        incidents = []
+        for row in rows:
+            incidents.append({
+                "id": row["id"],
+                "type": row["type"],
+                "content": row["content"],
+                "description": row["description"],
+                "risk_score": row["risk_score"],
+                "severity": row["severity"],
+                "status": row["status"],
+                "created_at": row["created_at"]
+            })
+        
+        return {"incidents": incidents, "total": len(incidents)}
+
+@app.get("/api/incidents/{incident_id}")
+async def get_incident(incident_id: str):
+    """Get single incident from reports folder"""
+    try:
+        # Try to read from reports folder first
+        report_file = REPORTS_DIR / f"{incident_id}.json"
+        
+        if report_file.exists():
+            with open(report_file, 'r', encoding='utf-8') as f:
+                report_data = json.load(f)
+                return report_data
+        
+        # Fallback to database
+        conn = get_db()
+        cursor = conn.execute("SELECT * FROM incidents WHERE id = ?", (incident_id,))
+        row = cursor.fetchone()
+        conn.close()
+        
+        if not row:
+            raise HTTPException(status_code=404, detail="Incident not found")
+        
+        return {
             "id": row["id"],
             "type": row["type"],
             "content": row["content"],
@@ -982,34 +1113,15 @@ async def get_incidents():
             "risk_score": row["risk_score"],
             "severity": row["severity"],
             "status": row["status"],
+            "indicators": json.loads(row["indicators"]) if row["indicators"] else [],
+            "recommendations": json.loads(row["recommendations"]) if row["recommendations"] else [],
             "created_at": row["created_at"]
-        })
-    
-    return {"incidents": incidents, "total": len(incidents)}
-
-@app.get("/api/incidents/{incident_id}")
-async def get_incident(incident_id: str):
-    """Get single incident"""
-    conn = get_db()
-    cursor = conn.execute("SELECT * FROM incidents WHERE id = ?", (incident_id,))
-    row = cursor.fetchone()
-    conn.close()
-    
-    if not row:
+        }
+    except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Incident not found")
-    
-    return {
-        "id": row["id"],
-        "type": row["type"],
-        "content": row["content"],
-        "description": row["description"],
-        "risk_score": row["risk_score"],
-        "severity": row["severity"],
-        "status": row["status"],
-        "indicators": row["indicators"],
-        "recommendations": row["recommendations"],
-        "created_at": row["created_at"]
-    }
+    except Exception as e:
+        print(f"Error reading incident {incident_id}: {e}")
+        raise HTTPException(status_code=500, detail="Error retrieving incident")
 
 @app.get("/api/stats")
 async def get_stats():

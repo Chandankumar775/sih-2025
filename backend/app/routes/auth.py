@@ -32,15 +32,8 @@ DEMO_USERS = {
         "email": "reporter@army.mil",
         "role": "reporter"
     },
-    "analyst@cert.army.mil": {
-        "id": "demo-user-2",
-        "password": "demo123",
-        "name": "CERT Analyst",
-        "email": "analyst@cert.army.mil",
-        "role": "analyst"
-    },
     "admin@rakshanetra.mil": {
-        "id": "demo-user-3",
+        "id": "demo-user-2",
         "password": "demo123",
         "name": "System Admin",
         "email": "admin@rakshanetra.mil",

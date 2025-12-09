@@ -64,7 +64,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 | GET | `/api/incidents/{id}/analysis` | Get incident analysis |
 | POST | `/api/incidents/{id}/escalate` | Escalate to CERT |
 
-### Analytics (Analysts/Admins only)
+### Analytics (Admins only)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/analytics/stats` | Get incident statistics |
@@ -78,7 +78,6 @@ For hackathon demonstration:
 | Email | Password | Role |
 |-------|----------|------|
 | reporter@army.mil | demo123 | Reporter |
-| analyst@cert.army.mil | demo123 | Analyst |
 | admin@rakshanetra.mil | demo123 | Admin |
 
 ## Project Structure

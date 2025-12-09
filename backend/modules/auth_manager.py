@@ -25,7 +25,7 @@ class User:
     user_id: str
     username: str
     email: str
-    role: str  # 'reporter', 'analyst', 'admin'
+    role: str  # 'reporter', 'admin'
     full_name: str
     unit: Optional[str]
     created_at: str
@@ -173,7 +173,7 @@ class AuthManager:
         cursor = conn.cursor()
         
         # Validate role
-        valid_roles = ["reporter", "analyst", "admin"]
+        valid_roles = ["reporter", "admin"]
         if role not in valid_roles:
             return {"success": False, "message": f"Invalid role. Must be one of: {valid_roles}"}
         

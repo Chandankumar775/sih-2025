@@ -1,19 +1,15 @@
 export const RakshaNetraLogo = () => {
     return (
-        <div className="loader-wrapper scale-125 mb-8">
-            <span className="loader-letter">R</span>
-            <span className="loader-letter">A</span>
-            <span className="loader-letter">K</span>
-            <span className="loader-letter">S</span>
-            <span className="loader-letter">H</span>
-            <span className="loader-letter">A</span>
-            <span className="loader-letter">&nbsp;</span>
-            <span className="loader-letter">N</span>
-            <span className="loader-letter">E</span>
-            <span className="loader-letter">T</span>
-            <span className="loader-letter">R</span>
-            <span className="loader-letter">A</span>
-            <div className="loader"></div>
+        <div className="flex flex-col items-center gap-4 mb-8">
+            <img 
+                src="/media/logo.png" 
+                alt="RakshaNetra Logo" 
+                className="h-32 w-32 object-contain"
+            />
+            <div className="text-center">
+                <h2 className="text-3xl font-bold text-gray-900">RAKSHA NETRA</h2>
+                <p className="text-sm text-gray-600 mt-1">Ministry of Defence, Govt. of India</p>
+            </div>
         </div>
     );
 };

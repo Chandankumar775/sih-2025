@@ -10,12 +10,20 @@ import { useAuth } from "@/hooks/useAuth";
 import { APP_NAME } from "@/utils/constants";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export const Navbar = () => {
+interface NavbarProps {
+  hideAuthButtons?: boolean;
+}
+
+export const Navbar = ({ hideAuthButtons = false }: NavbarProps = {}) => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  
+  // Auto-hide auth buttons on non-home pages
+  const isHomePage = location.pathname === '/' || location.pathname === '/index';
+  const shouldShowAuthButtons = isHomePage && !hideAuthButtons;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,10 +39,15 @@ export const Navbar = () => {
   };
 
   const navLinks = [
-    { label: "Dashboard", path: "/dashboard", roles: ["analyst", "admin"] },
-    { label: "Report Incident", path: "/report", roles: ["reporter", "analyst", "admin"] },
-    { label: "Trends", path: "/trends", roles: ["analyst", "admin"] },
+    { label: "Dashboard", path: "/dashboard", roles: ["admin"] },
+    { label: "Report Incident", path: "/report", roles: ["reporter", "admin"] },
+    { label: "Analytics", path: "/analysis-admin", roles: ["admin"] },
+    { label: "Zero Trust", path: "/zero-trust", roles: ["admin"] },
+    { label: "Trends", path: "/trends", roles: ["admin"] },
   ];
+
+  // Hide nav links on homepage
+  const showNavLinks = !isHomePage;
 
   const filteredLinks = navLinks.filter(
     (link) => !user || link.roles.includes(user.role)
@@ -52,20 +65,23 @@ export const Navbar = () => {
     >
       <div className="gov-container">
         <div
-          className={`glass-panel rounded-2xl px-6 transition-all duration-300 ${scrolled ? "h-16" : "h-20"
+          className={`bg-white/95 backdrop-blur-md shadow-lg border border-gray-200 rounded-2xl px-6 transition-all duration-300 ${scrolled ? "h-16" : "h-20"
             } flex items-center justify-between`}
         >
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
-              <Shield className="h-8 w-8 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
-              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <img 
+                src="/media/logo.png" 
+                alt="RakshaNetra Logo" 
+                className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-110"
+              />
             </div>
             <div className="flex flex-col">
-              <span className="text-foreground font-bold text-lg leading-tight tracking-tight font-heading">
+              <span className="text-gray-900 font-bold text-lg leading-tight tracking-tight font-heading">
                 {APP_NAME}
               </span>
-              <span className="text-primary/80 text-[10px] uppercase tracking-widest">
+              <span className="text-blue-900 text-[10px] uppercase tracking-widest">
                 Cyber Defence
               </span>
             </div>
@@ -73,7 +89,7 @@ export const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {isAuthenticated &&
+            {isAuthenticated && showNavLinks &&
               filteredLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -122,7 +138,7 @@ export const Navbar = () => {
                   <LogOut className="h-5 w-5" />
                 </button>
               </div>
-            ) : (
+            ) : shouldShowAuthButtons ? (
               <div className="flex items-center gap-3">
                 <Link
                   to="/login"
@@ -137,7 +153,7 @@ export const Navbar = () => {
                   Register
                 </Link>
               </div>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -207,7 +223,7 @@ export const Navbar = () => {
                       <LogOut className="h-5 w-5" />
                     </button>
                   </div>
-                ) : (
+                ) : shouldShowAuthButtons ? (
                   <div className="flex flex-col gap-2">
                     <Link
                       to="/login"
@@ -224,7 +240,7 @@ export const Navbar = () => {
                       Register
                     </Link>
                   </div>
-                )}
+                ) : null}
               </nav>
             </motion.div>
           )}

@@ -31,44 +31,44 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    try {
+      // Call REAL backend API
+      const response = await fetch('http://localhost:8000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // Hardcoded login logic: check if username is "admin"
-    const username = email.split('@')[0].toLowerCase();
-    
-    if (username === 'admin') {
-      // Admin login
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: 'Login failed' }));
+        throw new Error(errorData.detail || 'Login failed');
+      }
+
+      const data = await response.json();
+      
+      // Extract user and token from backend response
       const user: User = {
-        id: '3',
-        name: 'System Admin',
-        email: email,
-        role: 'admin'
+        id: data.user.user_id,
+        name: data.user.username,
+        email: data.user.email,
+        role: data.user.role
       };
-      const token = btoa(`${email}:${Date.now()}`);
+      
+      const token = data.access_token || data.token;
+      
       setAuth(token, user);
       setAuthState({ user, token, isAuthenticated: true });
       setLoading(false);
       return { success: true };
-    } else {
-      // Regular user login (reporter)
-      const user: User = {
-        id: Date.now().toString(),
-        name: email.split('@')[0] || 'User',
-        email: email,
-        role: 'reporter'
-      };
-      const token = btoa(`${email}:${Date.now()}`);
-      setAuth(token, user);
-      setAuthState({ user, token, isAuthenticated: true });
+      
+    } catch (err: any) {
+      console.error('Login error:', err);
       setLoading(false);
-      return { success: true };
+      setError(err.message || "Login failed. Please try again.");
+      return { success: false, error: err.message };
     }
-
-    // This code is unreachable now but kept for safety
-    setLoading(false);
-    setError("Invalid credentials. Use demo accounts.");
-    return { success: false, error: "Invalid credentials" };
   }, []);
 
   const register = useCallback(async (name: string, email: string, password: string) => {

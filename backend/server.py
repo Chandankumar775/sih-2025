@@ -19,6 +19,12 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+# Pydantic models for request validation
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+    username: Optional[str] = None
+
 # Create reports directory if it doesn't exist
 REPORTS_DIR = Path(__file__).parent / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
@@ -713,17 +719,17 @@ async def register(
 
 
 @app.post("/api/auth/login")
-async def login(
-    username: str = Form(...),
-    password: str = Form(...)
-):
+async def login(credentials: LoginRequest):
     """
     Login and get JWT token
+    Accepts JSON payload: {"email": "user@example.com", "password": "pass123"}
     """
+    username = credentials.username or credentials.email
+    
     result = auth_manager.login(
         username=username,
-        password=password,
-        ip_address=None,  # Can get from request
+        password=credentials.password,
+        ip_address=None,
         user_agent=None
     )
     
@@ -732,6 +738,7 @@ async def login(
     
     return {
         "success": True,
+        "access_token": result["token"],  # Frontend expects "access_token"
         "token": result["token"],
         "user": result["user"],
         "message": result["message"]
@@ -906,6 +913,17 @@ async def create_incident(
     conn.commit()
     conn.close()
     
+    # === DEFENCE FEATURE 4: Auto-Escalation ===
+    escalation_data = {
+        'risk_score': analysis['risk_score'],
+        'frequency_count': frequency_count,
+        'military_relevant': military_relevant,
+        'severity': analysis['severity'],
+        'content': content_to_analyze,
+        'fake_profile_detected': fake_profile_detected
+    }
+    escalation_result = auto_escalation.check_and_escalate(escalation_data, incident_id)
+    
     # === SAVE REPORT AS JSON FILE ===
     report_data = {
         "incident_id": incident_id,
@@ -941,17 +959,6 @@ async def create_incident(
         json.dump(report_data, f, indent=2, ensure_ascii=False)
     
     print(f"📄 Report saved: {report_file}")
-    
-    # === DEFENCE FEATURE 4: Auto-Escalation ===
-    escalation_data = {
-        'risk_score': analysis['risk_score'],
-        'frequency_count': frequency_count,
-        'military_relevant': military_relevant,
-        'severity': analysis['severity'],
-        'content': content_to_analyze,
-        'fake_profile_detected': fake_profile_detected
-    }
-    escalation_result = auto_escalation.check_and_escalate(escalation_data, incident_id)
     
     # Add escalation timeline event
     if escalation_result['escalated']:

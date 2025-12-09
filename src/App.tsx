@@ -85,6 +85,14 @@ const App = () => (
               }
             />
             <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AnalysisAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/zero-trust"
               element={
                 <ProtectedRoute>

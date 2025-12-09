@@ -38,8 +38,106 @@ const Dashboard = () => {
 
   const fetchIncidents = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/incidents`);
-      setIncidents(response.data.incidents || []);
+      // Mock data: 8 incidents with all categories and severities
+      const mockIncidents: Incident[] = [
+        {
+          id: "INC-20251209-001",
+          type: "url",
+          risk_score: 95,
+          severity: "critical",
+          summary: "Phishing URL targeting Army Welfare Portal",
+          description: "Suspicious website mimicking army-welfare.gov.in",
+          content: "https://army-welfare-scam.com/pension",
+          created_at: "2024-12-09T08:30:00Z",
+          status: "pending",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-002",
+          type: "message",
+          risk_score: 87,
+          severity: "high",
+          summary: "Credential harvesting SMS campaign",
+          description: "Mass SMS asking defence personnel to verify credentials",
+          content: "Urgent: Verify your defence portal credentials immediately",
+          created_at: "2024-12-09T09:15:00Z",
+          status: "under_review",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-003",
+          type: "file",
+          risk_score: 98,
+          severity: "critical",
+          summary: "Malicious executable disguised as invoice",
+          description: "PE file with ransomware indicators detected",
+          content: "Invoice_Army_Contract.exe",
+          created_at: "2024-12-09T10:00:00Z",
+          status: "pending",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-004",
+          type: "url",
+          risk_score: 72,
+          severity: "medium",
+          summary: "Fake MoD login portal",
+          description: "Cloned Ministry of Defence website",
+          content: "http://mod-gov-fake.in/login",
+          created_at: "2024-12-09T11:20:00Z",
+          status: "resolved",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-005",
+          type: "message",
+          risk_score: 85,
+          severity: "high",
+          summary: "Cantonment payment scam",
+          description: "WhatsApp message with payment link for fake cantonment dues",
+          content: "Cantonment board payment pending - click here to pay",
+          created_at: "2024-12-09T12:45:00Z",
+          status: "under_review",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-006",
+          type: "file",
+          risk_score: 68,
+          severity: "medium",
+          summary: "Suspicious PDF with macro",
+          description: "Document contains auto-execute macros",
+          content: "Defence_Document.pdf",
+          created_at: "2024-12-09T14:10:00Z",
+          status: "pending",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-007",
+          type: "url",
+          risk_score: 91,
+          severity: "high",
+          summary: "OTP phishing for pension portal",
+          description: "Fake pension portal asking for OTP and bank details",
+          content: "https://pension-portal-phish.net/otp",
+          created_at: "2024-12-09T15:30:00Z",
+          status: "pending",
+          geo_region: "Anonymous"
+        },
+        {
+          id: "INC-20251209-008",
+          type: "message",
+          risk_score: 45,
+          severity: "low",
+          summary: "Suspicious recruitment SMS",
+          description: "Unverified recruitment message from unknown number",
+          content: "Army recruitment drive - Call now for details",
+          created_at: "2024-12-09T16:00:00Z",
+          status: "resolved",
+          geo_region: "Anonymous"
+        }
+      ];
+      setIncidents(mockIncidents);
       setError(null);
     } catch (err) {
       console.error("Failed to fetch incidents:", err);
@@ -228,7 +326,7 @@ const Dashboard = () => {
                     filteredIncidents.map((incident) => (
                       <tr key={incident.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4 text-sm text-gray-900 font-mono">
-                          #{incident.id.slice(0, 8)}
+                          {incident.id}
                         </td>
                         <td className="px-6 py-4 text-sm">
                           <span className="inline-flex items-center gap-1 text-gray-700">

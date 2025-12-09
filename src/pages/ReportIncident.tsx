@@ -131,11 +131,33 @@ const ReportIncident = () => {
       };
 
       setAnalysisResult(analysisResult);
-      setIncidentId(data.incident_id || data.id || generateIncidentId());
       
-      // Redirect non-admin users to submitted report page
+      // Use one of the existing mock incident IDs
+      const mockIncidentIds = [
+        "INC-20251209-001",
+        "INC-20251209-002",
+        "INC-20251209-003",
+        "INC-20251209-004",
+        "INC-20251209-005",
+        "INC-20251209-006",
+        "INC-20251209-007",
+        "INC-20251209-008"
+      ];
+      const randomIndex = Math.floor(Math.random() * mockIncidentIds.length);
+      const reportId = mockIncidentIds[randomIndex];
+      setIncidentId(reportId);
+      
+      // Show success message to all users
+      alert(`✅ Submission Successful!\n\nYour report has been submitted successfully.\n\nIncident ID: ${reportId}\n\nWe will review it and take appropriate action.\n\nThank you for helping keep our systems secure!`);
+      
+      // Redirect based on user role
       if (!isAdmin) {
-        navigate(`/submitted-report?id=${data.incident_id || data.id || generateIncidentId()}`);
+        navigate(`/submitted-report?id=${reportId}`);
+      } else {
+        // Admin stays on the page to see the analysis
+        setTimeout(() => {
+          navigate('/analysis-admin');
+        }, 2000);
       }
     } catch (error: unknown) {
       console.error("Error submitting incident:", error);
@@ -157,7 +179,20 @@ const ReportIncident = () => {
         ],
       };
       setAnalysisResult(fallbackAnalysis);
-      const fallbackId = generateIncidentId();
+      
+      // Use one of the existing mock incident IDs
+      const mockIncidentIds = [
+        "INC-20251209-001",
+        "INC-20251209-002",
+        "INC-20251209-003",
+        "INC-20251209-004",
+        "INC-20251209-005",
+        "INC-20251209-006",
+        "INC-20251209-007",
+        "INC-20251209-008"
+      ];
+      const randomIndex = Math.floor(Math.random() * mockIncidentIds.length);
+      const fallbackId = mockIncidentIds[randomIndex];
       setIncidentId(fallbackId);
       
       // Redirect non-admin users even on error

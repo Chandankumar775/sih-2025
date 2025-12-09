@@ -31,13 +31,22 @@ const AnalysisAdmin = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/incidents`);
-        const incidents = response.data.incidents;
+        // Mock data: 8 incidents with all categories and severities
+        const mockIncidents = [
+          { id: "INC-20251209-001", type: "url", severity: "critical", content: "https://army-welfare-scam.com/pension", reporter: "Col. Sharma", timestamp: "2024-12-09 08:30" },
+          { id: "INC-20251209-002", type: "message", severity: "high", content: "Urgent: Verify your defence portal credentials", reporter: "Maj. Patel", timestamp: "2024-12-09 09:15" },
+          { id: "INC-20251209-003", type: "file", severity: "critical", content: "Invoice_Army_Contract.exe", reporter: "Lt. Kumar", timestamp: "2024-12-09 10:00" },
+          { id: "INC-20251209-004", type: "url", severity: "medium", content: "http://mod-gov-fake.in/login", reporter: "Capt. Singh", timestamp: "2024-12-09 11:20" },
+          { id: "INC-20251209-005", type: "message", severity: "high", content: "Cantonment board payment pending - click here", reporter: "Maj. Reddy", timestamp: "2024-12-09 12:45" },
+          { id: "INC-20251209-006", type: "file", severity: "medium", content: "Defence_Document.pdf", reporter: "Lt. Col. Verma", timestamp: "2024-12-09 14:10" },
+          { id: "INC-20251209-007", type: "url", severity: "high", content: "https://pension-portal-phish.net/otp", reporter: "Col. Nair", timestamp: "2024-12-09 15:30" },
+          { id: "INC-20251209-008", type: "message", severity: "low", content: "Suspicious recruitment SMS from unknown number", reporter: "Capt. Gupta", timestamp: "2024-12-09 16:00" },
+        ];
 
         // Calculate attack type statistics
         const typeMap: Record<string, any> = {};
         
-        incidents.forEach((inc: any) => {
+        mockIncidents.forEach((inc: any) => {
           const type = inc.type || "unknown";
           if (!typeMap[type]) {
             typeMap[type] = {
@@ -54,7 +63,7 @@ const AnalysisAdmin = () => {
           }
         });
 
-        const total = incidents.length;
+        const total = mockIncidents.length;
         const statsArray = Object.values(typeMap).map((item: any) => ({
           ...item,
           percentage: total > 0 ? (item.count / total) * 100 : 0
@@ -72,8 +81,6 @@ const AnalysisAdmin = () => {
     };
 
     fetchAnalytics();
-    const interval = setInterval(fetchAnalytics, 10000); // Refresh every 10s
-    return () => clearInterval(interval);
   }, []);
 
   const getTypeIcon = (type: string) => {

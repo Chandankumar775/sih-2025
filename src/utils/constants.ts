@@ -6,7 +6,7 @@
 export const APP_NAME = "Raksha Netra";
 export const APP_TAGLINE = "AI-Powered Cyber Incident Portal for Defence";
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export const INCIDENT_TYPES = {
   URL: "url",

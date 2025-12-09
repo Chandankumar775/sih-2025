@@ -1,0 +1,108 @@
+{
+  "incident_id": "INC-251209-14E0EE",
+  "type": "url",
+  "content": "dwdwdw",
+  "description": null,
+  "location": null,
+  "unit_name": null,
+  "risk_score": 45,
+  "severity": "medium",
+  "status": "pending",
+  "indicators": [
+    "Pattern-based analysis completed",
+    "Suspicious content structure detected",
+    "Manual review recommended"
+  ],
+  "recommendations": [
+    "🚫 Do NOT click any links or download attachments",
+    "📞 Verify sender authenticity through official channels",
+    "🛡️ Report to your IT Security Officer immediately",
+    "🗑️ Delete the message after reporting"
+  ],
+  "created_at": "2025-12-09T10:46:26.205193",
+  "geo_region": "Unknown Region",
+  "frequency_count": 1,
+  "military_relevant": false,
+  "fake_profile_detected": false,
+  "reporter_id": "USR-534EAE6AE721",
+  "reporter_username": "reporter",
+  "ai_analysis": {
+    "risk_score": 45,
+    "is_threat": true,
+    "threat_type": "spam",
+    "attack_vector": "url",
+    "severity": "medium",
+    "summary": "Rule-based engine detected medium-severity spam threat",
+    "detailed_description": "This url has been analyzed using our advanced rule-based threat detection engine. \n\nThe content exhibits multiple characteristics commonly associated with spam attacks. With a risk score of 45/100, this falls into the medium severity category. Our analysis has identified 0 specific threat indicators that warrant immediate attention.\n\nFor defence personnel, this type of content is particularly concerning as it may be part of a targeted social engineering campaign. The use of urgency tactics and requests for action are classic hallmarks of cyber attacks designed to bypass critical thinking and exploit trust. We strongly recommend following all security protocols and reporting this to your IT security team immediately.",
+    "indicators": [
+      "Pattern-based analysis completed",
+      "Suspicious content structure detected",
+      "Manual review recommended"
+    ],
+    "recommendations": [
+      "🚫 Do NOT click any links or download attachments",
+      "📞 Verify sender authenticity through official channels",
+      "🛡️ Report to your IT Security Officer immediately",
+      "🗑️ Delete the message after reporting"
+    ],
+    "potential_impact": "Financial Loss",
+    "technical_details": {
+      "ip_addresses": [],
+      "domains": [],
+      "file_hashes": [],
+      "malware_family": null
+    },
+    "ai_powered": false,
+    "model": "Rule-based Detection Engine",
+    "fallback_reason": "Gemini unavailable: 403 Your API key was reported as leaked. Please use another API key.",
+    "nlp_analysis": {
+      "entities": {
+        "phone_numbers": [],
+        "emails": [],
+        "urls": [],
+        "bank_names": [],
+        "army_ranks": [],
+        "money_amounts": [],
+        "persons": [],
+        "organizations": []
+      },
+      "language": "unknown",
+      "sentiment": {
+        "polarity": 0.0,
+        "subjectivity": 0.5,
+        "label": "neutral"
+      },
+      "urgency_score": 50,
+      "scam_keywords": [],
+      "threat_indicators": {
+        "has_suspicious_url": false,
+        "has_ip_address": false,
+        "requests_credentials": false,
+        "mentions_money": false,
+        "impersonates_authority": false,
+        "creates_urgency": false,
+        "threatens_consequences": false,
+        "suspicious_sender": false,
+        "threat_level": "Low",
+        "total_indicators": 0
+      },
+      "analysis_type": "Basic Pattern Matching",
+      "confidence": 0.6,
+      "note": "Limited analysis - NLP libraries not available"
+    },
+    "language_detected": "unknown"
+  },
+  "sandbox_analysis": null,
+  "army_context": {
+    "military_relevant": false,
+    "relevance_reasons": [],
+    "scam_patterns": [],
+    "rank_mentions": null,
+    "defence_orgs": [],
+    "threat_assessment": "none"
+  },
+  "similar_threats": [],
+  "related_incident_ids": [],
+  "escalated": false,
+  "escalation_reason": null
+}

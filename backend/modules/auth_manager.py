@@ -239,12 +239,12 @@ class AuthManager:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Get user
+        # Get user by username OR email
         cursor.execute("""
             SELECT user_id, username, email, password_hash, salt, role,
                    full_name, unit, created_at, is_active, login_count
-            FROM users WHERE username = ?
-        """, (username,))
+            FROM users WHERE username = ? OR email = ?
+        """, (username, username))
         
         row = cursor.fetchone()
         

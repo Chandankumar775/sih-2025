@@ -46,15 +46,68 @@ except:
     PIL_AVAILABLE = False
 
 # VirusTotal API (Optional - requires API key)
-VIRUSTOTAL_API_KEY = None  # Set this in .env file
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+VIRUSTOTAL_API_KEY = os.getenv('VIRUSTOTAL_API_KEY')
 VIRUSTOTAL_ENABLED = False
 
 try:
     import vt
     if VIRUSTOTAL_API_KEY:
         VIRUSTOTAL_ENABLED = True
-except:
+        print(f"✅ VirusTotal integration ENABLED")
+    else:
+        print(f"⚠️  VirusTotal API key not set (optional)")
+except ImportError:
+    print(f"⚠️  VirusTotal library not available")
     pass
+
+# YARA Rules (Using pattern matching as fallback for Windows compatibility)
+YARA_AVAILABLE = False
+YARA_RULES = None
+
+# Pattern-based malware detection (YARA alternative)
+MALWARE_PATTERNS = {
+    "ransomware": {
+        "patterns": [b"encrypt", b"decrypt", b"bitcoin", b"ransom", b"payment", b".locked"],
+        "severity": "critical",
+        "description": "Ransomware indicators detected"
+    },
+    "keylogger": {
+        "patterns": [b"GetAsyncKeyState", b"GetKeyboardState", b"SetWindowsHookEx", b"keylog"],
+        "severity": "high",
+        "description": "Keylogger patterns detected"
+    },
+    "trojan": {
+        "patterns": [b"backdoor", b"shell", b"schtasks", b"TeamViewer", b"AnyDesk"],
+        "severity": "high",
+        "description": "Trojan/backdoor indicators found"
+    },
+    "network_attack": {
+        "patterns": [b"cmd.exe", b"powershell", b".onion", b"wget", b"curl"],
+        "severity": "medium",
+        "description": "Suspicious network activity patterns"
+    },
+    "crypto_miner": {
+        "patterns": [b"stratum+tcp://", b"xmrig", b"ethminer", b"monero", b"pool"],
+        "severity": "medium",
+        "description": "Cryptocurrency mining indicators"
+    },
+    "phishing_doc": {
+        "patterns": [b"Auto_Open", b"AutoOpen", b"CreateObject", b"WScript"],
+        "severity": "medium",
+        "description": "Suspicious macro/script in document"
+    },
+    "army_targeted": {
+        "patterns": [b"Indian Army", b"Ministry of Defence", b"soldier", b"officer", b"WhatsApp", b"Telegram"],
+        "severity": "critical",
+        "description": "Content targeting Indian defense personnel"
+    }
+}
+
+print(f"✅ Pattern-based malware detection ENABLED ({len(MALWARE_PATTERNS)} signatures)")
 
 
 def analyze_file(file_content: bytes, filename: str, file_size: int) -> Dict[str, Any]:
@@ -112,6 +165,17 @@ def analyze_file(file_content: bytes, filename: str, file_size: int) -> Dict[str
     
     # Calculate threat level
     result["threat_level"] = calculate_threat_level(result)
+    
+    # Pattern-based malware detection (YARA alternative)
+    result["malware_matches"] = scan_malware_patterns(file_content)
+    if result["malware_matches"]:
+        for match in result["malware_matches"]:
+            result["malware_indicators"].append(f"{match['category'].upper()}: {match['description']}")
+            # Escalate threat level if critical malware detected
+            if match["severity"] == "critical":
+                result["threat_level"] = "CRITICAL"
+            elif match["severity"] == "high" and result["threat_level"] not in ["CRITICAL"]:
+                result["threat_level"] = "HIGH"
     
     # VirusTotal check (if enabled)
     if VIRUSTOTAL_ENABLED:
@@ -498,15 +562,80 @@ def check_virustotal(file_hash: str) -> Optional[Dict[str, Any]]:
                 "suspicious": stats.get('suspicious', 0),
                 "undetected": stats.get('undetected', 0),
                 "harmless": stats.get('harmless', 0),
-                "total_vendors": sum(stats.values()),
-                "detection_ratio": f"{stats.get('malicious', 0)}/{sum(stats.values())}",
-                "scan_date": file_info.last_analysis_date
+                "total_engines": sum(stats.values()),
+                "scan_date": file_info.last_analysis_date.isoformat() if file_info.last_analysis_date else None,
+                "permalink": f"https://www.virustotal.com/gui/file/{file_hash}"
             }
+    except vt.error.APIError as e:
+        if e.code == "NotFoundError":
+            return {"scanned": False, "message": "File not found in VirusTotal database"}
+        else:
+            return {"scanned": False, "error": str(e)}
     except Exception as e:
-        return {
-            "scanned": False,
-            "error": str(e)
-        }
+        print(f"[ERROR] VirusTotal check failed: {e}")
+        return {"scanned": False, "error": str(e)}
+
+
+def scan_with_yara(file_content: bytes) -> list:
+    """
+    Scan file content with YARA malware detection rules
+    
+    Returns:
+        List of matched rules with metadata
+    """
+    if not YARA_AVAILABLE or not YARA_RULES:
+        return []
+    
+    try:
+        matches = YARA_RULES.match(data=file_content)
+        results = []
+        
+        for match in matches:
+            rule_info = {
+                "rule": match.rule,
+                "description": match.meta.get('description', 'No description'),
+                "severity": match.meta.get('severity', 'medium'),
+                "category": match.meta.get('category', 'unknown'),
+                "strings_matched": [str(s) for s in match.strings[:5]]  # First 5 matches
+            }
+            results.append(rule_info)
+            print(f"[YARA] ⚠️  Matched: {match.rule} ({rule_info['severity']}) - {rule_info['description']}")
+        
+        return results
+    except Exception as e:
+        print(f"[ERROR] YARA scanning failed: {e}")
+        return []
+
+
+def scan_malware_patterns(file_content: bytes) -> list:
+    """
+    Pattern-based malware detection (YARA alternative for Windows)
+    Scans file content for known malware signatures and behaviors
+    
+    Returns:
+        List of detected malware patterns
+    """
+    results = []
+    
+    for category, config in MALWARE_PATTERNS.items():
+        matched_patterns = []
+        for pattern in config["patterns"]:
+            if pattern in file_content:
+                matched_patterns.append(pattern.decode('utf-8', errors='ignore'))
+        
+        # If at least 2 patterns match, consider it a detection
+        if len(matched_patterns) >= 2:
+            result = {
+                "category": category,
+                "description": config["description"],
+                "severity": config["severity"],
+                "matched_patterns": matched_patterns[:5]  # First 5 matches
+            }
+            results.append(result)
+            print(f"[MALWARE] ⚠️  Detected: {category.upper()} ({config['severity']}) - {config['description']}")
+            print(f"          Patterns: {', '.join(matched_patterns[:3])}")
+    
+    return results
 
 
 def format_file_size(size_bytes: int) -> str:

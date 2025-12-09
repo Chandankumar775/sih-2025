@@ -12,45 +12,54 @@ import { TrendingUp, AlertTriangle, Shield, Calendar, Activity } from "lucide-re
 import { Layout } from "@/components/Layout";
 
 const Trends = () => {
-  // Mock data for charts
+  // Mock data for charts - 15 data points
   const weeklyData = [
     { day: "Mon", incidents: 12, critical: 2 },
     { day: "Tue", incidents: 19, critical: 4 },
     { day: "Wed", incidents: 15, critical: 3 },
     { day: "Thu", incidents: 25, critical: 6 },
     { day: "Fri", incidents: 22, critical: 5 },
-    { day: "Sat", incidents: 8, critical: 1 },
-    { day: "Sun", incidents: 6, critical: 1 },
+    { day: "Sat", incidents: 18, critical: 3 },
+    { day: "Sun", incidents: 16, critical: 2 },
+    { day: "Mon", incidents: 21, critical: 5 },
+    { day: "Tue", incidents: 17, critical: 3 },
+    { day: "Wed", incidents: 23, critical: 4 },
+    { day: "Thu", incidents: 20, critical: 5 },
+    { day: "Fri", incidents: 26, critical: 7 },
+    { day: "Sat", incidents: 14, critical: 2 },
+    { day: "Sun", incidents: 11, critical: 1 },
+    { day: "Mon", incidents: 19, critical: 4 },
   ];
 
   const riskDistribution = [
-    { name: "Critical", value: 15, color: "hsl(0, 62%, 30%)" }, // destructive
-    { name: "High", value: 28, color: "hsl(32, 100%, 50%)" }, // accent
-    { name: "Medium", value: 35, color: "hsl(45, 93%, 47%)" }, // yellow
-    { name: "Low", value: 22, color: "hsl(142, 71%, 45%)" }, // green
+    { name: "Critical", value: 2, color: "hsl(0, 62%, 30%)" },
+    { name: "High", value: 3, color: "hsl(32, 100%, 50%)" },
+    { name: "Medium", value: 2, color: "hsl(45, 93%, 47%)" },
+    { name: "Low", value: 1, color: "hsl(142, 71%, 45%)" },
   ];
 
   const incidentTypes = [
-    { type: "URL", count: 45 },
-    { type: "Message", count: 32 },
-    { type: "File", count: 23 },
+    { type: "URL", count: 3 },
+    { type: "Message", count: 3 },
+    { type: "File", count: 2 },
   ];
 
   const topDomains = [
-    { domain: "army-welfare-*.com", incidents: 15 },
-    { domain: "mod-gov-*.in", incidents: 12 },
-    { domain: "pension-portal-*.net", incidents: 9 },
-    { domain: "cantonment-*.org", incidents: 7 },
-    { domain: "defence-update-*.com", incidents: 5 },
+    { domain: "army-welfare-scam.com", incidents: 2 },
+    { domain: "mod-gov-fake.in", incidents: 1 },
+    { domain: "pension-portal-phish.net", incidents: 1 },
+    { domain: "cantonment-board-fraud.org", incidents: 1 },
+    { domain: "defence-update-malware.com", incidents: 1 },
   ];
 
   const monthlyTrend = [
-    { month: "Jun", incidents: 45 },
-    { month: "Jul", incidents: 52 },
-    { month: "Aug", incidents: 48 },
-    { month: "Sep", incidents: 65 },
-    { month: "Oct", incidents: 78 },
-    { month: "Nov", incidents: 107 },
+    { month: "Jun", incidents: 2 },
+    { month: "Jul", incidents: 3 },
+    { month: "Aug", incidents: 2 },
+    { month: "Sep", incidents: 4 },
+    { month: "Oct", incidents: 5 },
+    { month: "Nov", incidents: 6 },
+    { month: "Dec", incidents: 8 },
   ];
 
   return (
@@ -92,7 +101,7 @@ const Trends = () => {
                   <Shield className="h-6 w-6 text-blue-900" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gray-900 font-heading">107</p>
+                  <p className="text-3xl font-bold text-gray-900 font-heading">8</p>
                   <p className="text-xs text-gray-600 uppercase tracking-wider">This Month</p>
                 </div>
               </div>
